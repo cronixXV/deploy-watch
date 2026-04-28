@@ -1,0 +1,89 @@
+{
+  "name": "deploy-watch",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --check",
+    "format:fix": "prettier . --write",
+    "stylelint": "stylelint \"src/**/*.css\"",
+    "stylelint:fix": "stylelint \"src/**/*.css\" --fix",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run lint && npm run stylelint && npm run format && npm run test:run",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@reduxjs/toolkit": "^2.11.2",
+    "@tanstack/react-query": "^5.100.6",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.24",
+    "axios": "^1.15.2",
+    "lucide-react": "^1.12.0",
+    "msw": "^2.13.6",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-hook-form": "^7.74.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.14.2",
+    "recharts": "^3.8.1",
+    "sonner": "^2.0.7",
+    "yup": "^1.7.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.12.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/ui": "^4.1.5",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
+    "stylelint": "^17.9.1",
+    "stylelint-config-css-modules": "^4.6.0",
+    "stylelint-config-standard": "^40.0.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.1",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}
