@@ -16,10 +16,19 @@ type AuthState = {
   isAuthenticated: boolean;
 };
 
+const isDev = import.meta.env.DEV;
+
 const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  user: isDev
+    ? {
+        id: 'user-1',
+        name: 'Alex Morgan',
+        email: 'alex@deploywatch.dev',
+        role: 'release_manager',
+      }
+    : null,
+  token: isDev ? 'mock-token' : null,
+  isAuthenticated: isDev,
 };
 
 type LoginPayload = {
