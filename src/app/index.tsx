@@ -11,21 +11,27 @@ import { appStore } from './store/app-store';
 
 import './index.css';
 
-function App() {
-  return (
-    <Provider store={appStore}>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={appRouter} />
-        <Toaster richColors position="top-right" />
-      </QueryClientProvider>
-    </Provider>
-  );
+async function enableMocking() {
+  if (!import.meta.env.DEV) {
+    return;
+  }
+
+  const { worker } = await import('@/shared/api/mocks/browser');
+
+  return worker.start({
+    onUnhandledRequest: 'bypass',
+  });
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
-
-export { App };
+enableMocking().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <Provider store={appStore}>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={appRouter} />
+          <Toaster richColors position="top-right" />
+        </QueryClientProvider>
+      </Provider>
+    </StrictMode>,
+  );
+});
