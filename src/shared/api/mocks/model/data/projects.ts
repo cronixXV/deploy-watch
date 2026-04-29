@@ -1,3 +1,5 @@
+import { daysAgo, hoursAgo } from '../../lib/mock-date';
+
 import type { Project } from '../types/types';
 
 export const projects: Project[] = [
@@ -7,8 +9,8 @@ export const projects: Project[] = [
     repository: 'deploywatch/checkout-service',
     defaultBranch: 'main',
     description: 'Payment checkout frontend and API integration service.',
-    createdAt: '2026-04-01T09:00:00.000Z',
-    updatedAt: '2026-04-27T18:20:00.000Z',
+    createdAt: daysAgo(28),
+    updatedAt: hoursAgo(14),
   },
   {
     id: 'project-2',
@@ -16,8 +18,8 @@ export const projects: Project[] = [
     repository: 'deploywatch/identity-platform',
     defaultBranch: 'main',
     description: 'Authentication, authorization and user session platform.',
-    createdAt: '2026-03-12T10:30:00.000Z',
-    updatedAt: '2026-04-26T14:45:00.000Z',
+    createdAt: daysAgo(48),
+    updatedAt: daysAgo(1),
   },
   {
     id: 'project-3',
@@ -25,7 +27,7 @@ export const projects: Project[] = [
     repository: 'deploywatch/analytics-dashboard',
     defaultBranch: 'develop',
     description: 'Internal analytics dashboard for product metrics.',
-    createdAt: '2026-02-20T12:00:00.000Z',
-    updatedAt: '2026-04-25T11:10:00.000Z',
+    createdAt: daysAgo(68),
+    updatedAt: daysAgo(2),
   },
 ];

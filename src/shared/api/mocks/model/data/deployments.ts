@@ -1,3 +1,5 @@
+import { daysAgo, hoursAgo, minutesAgo, secondsAgo } from '../../lib/mock-date';
+
 import type { Deployment } from '../types/types';
 
 export const deployments: Deployment[] = [
@@ -10,7 +12,7 @@ export const deployments: Deployment[] = [
     commitHash: 'a8f3c91',
     branch: 'main',
     requestedById: 'user-2',
-    startedAt: '2026-04-28T08:50:00.000Z',
+    startedAt: secondsAgo(5),
   },
   {
     id: 'deployment-2',
@@ -22,8 +24,8 @@ export const deployments: Deployment[] = [
     branch: 'main',
     requestedById: 'user-3',
     approvedById: 'user-1',
-    startedAt: '2026-04-27T15:25:00.000Z',
-    finishedAt: '2026-04-27T15:29:00.000Z',
+    startedAt: minutesAgo(18 * 60 - 5),
+    finishedAt: minutesAgo(18 * 60 - 9),
   },
   {
     id: 'deployment-3',
@@ -34,7 +36,7 @@ export const deployments: Deployment[] = [
     commitHash: 'a8f3c91',
     branch: 'main',
     requestedById: 'user-2',
-    startedAt: '2026-04-28T09:00:00.000Z',
+    startedAt: minutesAgo(10),
   },
   {
     id: 'deployment-4',
@@ -45,8 +47,8 @@ export const deployments: Deployment[] = [
     commitHash: 'c2a4f88',
     branch: 'feature/apple-pay',
     requestedById: 'user-2',
-    startedAt: '2026-04-27T12:18:00.000Z',
-    finishedAt: '2026-04-27T12:21:00.000Z',
+    startedAt: hoursAgo(21),
+    finishedAt: minutesAgo(21 * 60 - 3),
   },
   {
     id: 'deployment-5',
@@ -58,7 +60,7 @@ export const deployments: Deployment[] = [
     branch: 'main',
     requestedById: 'user-1',
     approvedById: 'user-1',
-    startedAt: '2026-04-24T16:10:00.000Z',
-    finishedAt: '2026-04-24T16:18:00.000Z',
+    startedAt: daysAgo(4),
+    finishedAt: minutesAgo(4 * 24 * 60 - 8),
   },
 ];

@@ -1,3 +1,5 @@
+import { hoursAgo, minutesAgo } from '../../lib/mock-date';
+
 import type { Approval } from '../types/types';
 
 export const approvals: Approval[] = [
@@ -9,7 +11,7 @@ export const approvals: Approval[] = [
     status: 'pending',
     riskLevel: 'medium',
     requestedById: 'user-2',
-    createdAt: '2026-04-28T09:00:00.000Z',
+    createdAt: minutesAgo(10),
   },
   {
     id: 'approval-2',
@@ -19,8 +21,8 @@ export const approvals: Approval[] = [
     status: 'approved',
     riskLevel: 'low',
     requestedById: 'user-3',
-    createdAt: '2026-04-27T15:20:00.000Z',
-    resolvedAt: '2026-04-27T15:24:00.000Z',
+    createdAt: minutesAgo(18 * 60 + 9),
+    resolvedAt: minutesAgo(18 * 60 + 5),
     resolvedById: 'user-1',
   },
   {
@@ -31,8 +33,8 @@ export const approvals: Approval[] = [
     status: 'rejected',
     riskLevel: 'high',
     requestedById: 'user-2',
-    createdAt: '2026-04-27T12:12:00.000Z',
-    resolvedAt: '2026-04-27T12:16:00.000Z',
+    createdAt: hoursAgo(21),
+    resolvedAt: minutesAgo(21 * 60 - 4),
     resolvedById: 'user-1',
     rejectReason: 'Unit tests failed for checkout summary flow.',
   },

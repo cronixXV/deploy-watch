@@ -1,7 +1,7 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { approvals } from '../model/data/approvals';
-import { deployments } from '../model/data/deployments';
+import { mockRandomDelay, maybeMockError } from '../lib/mock-utils';
+import { mockState } from '../model/mock-state';
 
 import type {
   ApprovalRiskLevel,
@@ -25,7 +25,17 @@ function getSearchParam(url: URL, key: string) {
 
 export const approvalHandlers = [
   http.get('/approvals', async ({ request }) => {
-    await delay(600);
+    await mockRandomDelay(400, 900);
+
+    const error = maybeMockError({
+      probability: 0.03,
+      message: 'Failed to load approvals',
+      status: 500,
+    });
+
+    if (error) {
+      return error;
+    }
 
     const url = new URL(request.url);
 
@@ -40,7 +50,7 @@ export const approvalHandlers = [
       'riskLevel',
     ) as ApprovalRiskLevel | null;
 
-    const result = approvals.filter((approval) => {
+    const result = mockState.approvals.filter((approval) => {
       const matchesStatus = status ? approval.status === status : true;
       const matchesProject = projectId
         ? approval.projectId === projectId
@@ -64,11 +74,11 @@ export const approvalHandlers = [
   }),
 
   http.get('/approvals/:approvalId', async ({ params }) => {
-    await delay(400);
+    await mockRandomDelay(300, 700);
 
-    const { approvalId } = params;
+    const approvalId = String(params.approvalId);
 
-    const approval = approvals.find((item) => item.id === approvalId);
+    const approval = mockState.approvals.find((item) => item.id === approvalId);
 
     if (!approval) {
       return HttpResponse.json(
@@ -81,12 +91,22 @@ export const approvalHandlers = [
   }),
 
   http.post('/approvals/:approvalId/approve', async ({ params, request }) => {
-    await delay(800);
+    await mockRandomDelay(700, 1200);
 
-    const { approvalId } = params;
+    const error = maybeMockError({
+      probability: 0.08,
+      message: 'Approval action failed. Please try again.',
+      status: 503,
+    });
+
+    if (error) {
+      return error;
+    }
+
+    const approvalId = String(params.approvalId);
     const body = (await request.json().catch(() => ({}))) as ApproveRequestBody;
 
-    const approval = approvals.find((item) => item.id === approvalId);
+    const approval = mockState.approvals.find((item) => item.id === approvalId);
 
     if (!approval) {
       return HttpResponse.json(
@@ -102,7 +122,7 @@ export const approvalHandlers = [
       );
     }
 
-    const deployment = deployments.find(
+    const deployment = mockState.deployments.find(
       (item) => item.id === approval.deploymentId,
     );
 
@@ -113,12 +133,25 @@ export const approvalHandlers = [
       );
     }
 
+    const now = new Date().toISOString();
+
     approval.status = 'approved';
-    approval.resolvedAt = new Date().toISOString();
+    approval.resolvedAt = now;
     approval.resolvedById = 'user-1';
 
     deployment.status = 'deploying';
     deployment.approvedById = 'user-1';
+    deployment.startedAt = now;
+
+    const environment = mockState.environments.find(
+      (item) =>
+        item.projectId === deployment.projectId &&
+        item.name === deployment.environment,
+    );
+
+    if (environment) {
+      environment.status = 'deploying';
+    }
 
     return HttpResponse.json({
       approval,
@@ -128,12 +161,22 @@ export const approvalHandlers = [
   }),
 
   http.post('/approvals/:approvalId/reject', async ({ params, request }) => {
-    await delay(800);
+    await mockRandomDelay(700, 1200);
 
-    const { approvalId } = params;
+    const error = maybeMockError({
+      probability: 0.08,
+      message: 'Reject action failed. Please try again.',
+      status: 503,
+    });
+
+    if (error) {
+      return error;
+    }
+
+    const approvalId = String(params.approvalId);
     const body = (await request.json().catch(() => ({}))) as RejectRequestBody;
 
-    const approval = approvals.find((item) => item.id === approvalId);
+    const approval = mockState.approvals.find((item) => item.id === approvalId);
 
     if (!approval) {
       return HttpResponse.json(
@@ -156,7 +199,7 @@ export const approvalHandlers = [
       );
     }
 
-    const deployment = deployments.find(
+    const deployment = mockState.deployments.find(
       (item) => item.id === approval.deploymentId,
     );
 
@@ -167,13 +210,15 @@ export const approvalHandlers = [
       );
     }
 
+    const now = new Date().toISOString();
+
     approval.status = 'rejected';
-    approval.resolvedAt = new Date().toISOString();
+    approval.resolvedAt = now;
     approval.resolvedById = 'user-1';
     approval.rejectReason = body.reason;
 
     deployment.status = 'rejected';
-    deployment.finishedAt = new Date().toISOString();
+    deployment.finishedAt = now;
 
     return HttpResponse.json({
       approval,

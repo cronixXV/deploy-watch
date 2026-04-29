@@ -1,20 +1,31 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { projects } from '../model/data/projects';
+import { mockRandomDelay, maybeMockError } from '../lib/mock-utils';
+import { mockState } from '../model/mock-state';
 
 export const projectHandlers = [
   http.get('/projects', async () => {
-    await delay(500);
+    await mockRandomDelay(400, 900);
 
-    return HttpResponse.json(projects);
+    const error = maybeMockError({
+      probability: 0.02,
+      message: 'Failed to load projects',
+      status: 500,
+    });
+
+    if (error) {
+      return error;
+    }
+
+    return HttpResponse.json(mockState.projects);
   }),
 
   http.get('/projects/:projectId', async ({ params }) => {
-    await delay(400);
+    await mockRandomDelay(300, 700);
 
-    const { projectId } = params;
+    const projectId = String(params.projectId);
 
-    const project = projects.find((item) => item.id === projectId);
+    const project = mockState.projects.find((item) => item.id === projectId);
 
     if (!project) {
       return HttpResponse.json(

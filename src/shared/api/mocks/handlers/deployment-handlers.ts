@@ -1,6 +1,8 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { deployments } from '../model/data/deployments';
+import { mockRandomDelay, maybeMockError } from '../lib/mock-utils';
+import { updateDeploymentStatus } from '../lib/status-transitions';
+import { mockState } from '../model/mock-state';
 
 import type {
   Deployment,
@@ -20,9 +22,19 @@ function getSearchParam(url: URL, key: string) {
 
 export const deploymentHandlers = [
   http.get('/projects/:projectId/deployments', async ({ params, request }) => {
-    await delay(600);
+    await mockRandomDelay(400, 900);
 
-    const { projectId } = params;
+    const error = maybeMockError({
+      probability: 0.03,
+      message: 'Failed to load deployments',
+      status: 500,
+    });
+
+    if (error) {
+      return error;
+    }
+
+    const projectId = String(params.projectId);
     const url = new URL(request.url);
 
     const status = getSearchParam(url, 'status') as DeploymentStatus | null;
@@ -32,7 +44,11 @@ export const deploymentHandlers = [
     ) as EnvironmentName | null;
     const branch = getSearchParam(url, 'branch');
 
-    const result = deployments.filter((deployment) => {
+    mockState.deployments.forEach((deployment) => {
+      updateDeploymentStatus(deployment, mockState.environments);
+    });
+
+    const result = mockState.deployments.filter((deployment) => {
       const matchesProject = deployment.projectId === projectId;
       const matchesStatus = status ? deployment.status === status : true;
       const matchesEnvironment = environment
@@ -49,11 +65,23 @@ export const deploymentHandlers = [
   }),
 
   http.get('/deployments/:deploymentId', async ({ params }) => {
-    await delay(400);
+    await mockRandomDelay(300, 700);
 
-    const { deploymentId } = params;
+    const error = maybeMockError({
+      probability: 0.03,
+      message: 'Failed to load deployment',
+      status: 500,
+    });
 
-    const deployment = deployments.find((item) => item.id === deploymentId);
+    if (error) {
+      return error;
+    }
+
+    const deploymentId = String(params.deploymentId);
+
+    const deployment = mockState.deployments.find(
+      (item) => item.id === deploymentId,
+    );
 
     if (!deployment) {
       return HttpResponse.json(
@@ -62,20 +90,34 @@ export const deploymentHandlers = [
       );
     }
 
+    updateDeploymentStatus(deployment, mockState.environments);
+
     return HttpResponse.json(deployment);
   }),
 
   http.post(
     '/deployments/:deploymentId/rollback',
     async ({ params, request }) => {
-      await delay(800);
+      await mockRandomDelay(700, 1200);
 
-      const { deploymentId } = params;
+      const error = maybeMockError({
+        probability: 0.08,
+        message: 'Rollback failed because deployment service is unavailable',
+        status: 503,
+      });
+
+      if (error) {
+        return error;
+      }
+
+      const deploymentId = String(params.deploymentId);
       const body = (await request
         .json()
         .catch(() => ({}))) as RollbackRequestBody;
 
-      const deployment = deployments.find((item) => item.id === deploymentId);
+      const deployment = mockState.deployments.find(
+        (item) => item.id === deploymentId,
+      );
 
       if (!deployment) {
         return HttpResponse.json(
@@ -94,24 +136,35 @@ export const deploymentHandlers = [
         );
       }
 
+      const now = new Date().toISOString();
+
       deployment.status = 'rolled_back';
-      deployment.finishedAt = new Date().toISOString();
+      deployment.finishedAt = now;
 
       const rollbackDeployment: Deployment = {
         id: `deployment-rollback-${Date.now()}`,
         projectId: deployment.projectId,
         environment: deployment.environment,
-        status: 'deployed',
+        status: 'deploying',
         version: `${deployment.version}-rollback`,
         commitHash: deployment.commitHash,
         branch: deployment.branch,
         requestedById: deployment.requestedById,
         approvedById: deployment.approvedById,
-        startedAt: new Date().toISOString(),
-        finishedAt: new Date().toISOString(),
+        startedAt: now,
       };
 
-      deployments.unshift(rollbackDeployment);
+      mockState.deployments.unshift(rollbackDeployment);
+
+      const environment = mockState.environments.find(
+        (item) =>
+          item.projectId === deployment.projectId &&
+          item.name === deployment.environment,
+      );
+
+      if (environment) {
+        environment.status = 'deploying';
+      }
 
       return HttpResponse.json({
         deployment,

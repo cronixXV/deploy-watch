@@ -1,3 +1,5 @@
+import { daysAgo, hoursAgo, minutesAgo } from '../../lib/mock-date';
+
 import type { Environment } from '../types/types';
 
 export const environments: Environment[] = [
@@ -8,7 +10,7 @@ export const environments: Environment[] = [
     status: 'healthy',
     currentVersion: 'v1.18.0-dev.4',
     currentCommitHash: 'a8f3c91',
-    lastDeploymentAt: '2026-04-28T08:30:00.000Z',
+    lastDeploymentAt: minutesAgo(45),
     locked: false,
   },
   {
@@ -18,7 +20,7 @@ export const environments: Environment[] = [
     status: 'degraded',
     currentVersion: 'v1.17.2-rc.1',
     currentCommitHash: 'c2a4f88',
-    lastDeploymentAt: '2026-04-27T12:20:00.000Z',
+    lastDeploymentAt: hoursAgo(21),
     locked: false,
   },
   {
@@ -28,7 +30,7 @@ export const environments: Environment[] = [
     status: 'deploying',
     currentVersion: 'v1.18.0-rc.2',
     currentCommitHash: 'a8f3c91',
-    lastDeploymentAt: '2026-04-28T08:50:00.000Z',
+    lastDeploymentAt: minutesAgo(1),
     locked: false,
   },
   {
@@ -38,7 +40,7 @@ export const environments: Environment[] = [
     status: 'healthy',
     currentVersion: 'v1.17.1',
     currentCommitHash: 'b7d9e12',
-    lastDeploymentAt: '2026-04-27T15:29:00.000Z',
+    lastDeploymentAt: hoursAgo(18),
     locked: true,
   },
   {
@@ -48,7 +50,7 @@ export const environments: Environment[] = [
     status: 'locked',
     currentVersion: 'v2.4.0-rc.1',
     currentCommitHash: 'd4e7a10',
-    lastDeploymentAt: '2026-04-28T07:40:00.000Z',
+    lastDeploymentAt: hoursAgo(2),
     locked: true,
   },
   {
@@ -58,7 +60,7 @@ export const environments: Environment[] = [
     status: 'healthy',
     currentVersion: 'v2.3.8',
     currentCommitHash: 'f9b2c44',
-    lastDeploymentAt: '2026-04-26T10:13:00.000Z',
+    lastDeploymentAt: daysAgo(2),
     locked: false,
   },
 ];

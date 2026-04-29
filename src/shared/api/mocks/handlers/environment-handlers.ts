@@ -1,14 +1,30 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { environments } from '../model/data/environments';
+import { mockRandomDelay, maybeMockError } from '../lib/mock-utils';
+import { updateDeploymentStatus } from '../lib/status-transitions';
+import { mockState } from '../model/mock-state';
 
 export const environmentHandlers = [
   http.get('/projects/:projectId/environments', async ({ params }) => {
-    await delay(500);
+    await mockRandomDelay(300, 700);
 
-    const { projectId } = params;
+    const error = maybeMockError({
+      probability: 0.02,
+      message: 'Failed to load environments',
+      status: 500,
+    });
 
-    const result = environments.filter(
+    if (error) {
+      return error;
+    }
+
+    const projectId = String(params.projectId);
+
+    mockState.deployments.forEach((deployment) => {
+      updateDeploymentStatus(deployment, mockState.environments);
+    });
+
+    const result = mockState.environments.filter(
       (environment) => environment.projectId === projectId,
     );
 
@@ -16,11 +32,13 @@ export const environmentHandlers = [
   }),
 
   http.get('/environments/:environmentId', async ({ params }) => {
-    await delay(400);
+    await mockRandomDelay(300, 700);
 
-    const { environmentId } = params;
+    const environmentId = String(params.environmentId);
 
-    const environment = environments.find((item) => item.id === environmentId);
+    const environment = mockState.environments.find(
+      (item) => item.id === environmentId,
+    );
 
     if (!environment) {
       return HttpResponse.json(

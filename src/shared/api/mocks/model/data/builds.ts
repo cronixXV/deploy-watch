@@ -1,3 +1,5 @@
+import { hoursAgo, minutesAgo, secondsAgo } from '../../lib/mock-date';
+
 import type { Build } from '../types/types';
 
 export const builds: Build[] = [
@@ -7,8 +9,8 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-1',
     status: 'success',
     jobName: 'install',
-    startedAt: '2026-04-28T08:45:00.000Z',
-    finishedAt: '2026-04-28T08:47:00.000Z',
+    startedAt: secondsAgo(12),
+    finishedAt: secondsAgo(10),
     durationSec: 120,
   },
   {
@@ -17,8 +19,8 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-1',
     status: 'success',
     jobName: 'lint',
-    startedAt: '2026-04-28T08:47:05.000Z',
-    finishedAt: '2026-04-28T08:48:20.000Z',
+    startedAt: secondsAgo(9),
+    finishedAt: secondsAgo(7),
     durationSec: 75,
   },
   {
@@ -27,7 +29,7 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-1',
     status: 'running',
     jobName: 'unit-tests',
-    startedAt: '2026-04-28T08:48:30.000Z',
+    startedAt: secondsAgo(4),
   },
   {
     id: 'build-4',
@@ -35,8 +37,8 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-2',
     status: 'success',
     jobName: 'production-deploy',
-    startedAt: '2026-04-27T15:25:00.000Z',
-    finishedAt: '2026-04-27T15:29:00.000Z',
+    startedAt: minutesAgo(18 * 60 - 5),
+    finishedAt: minutesAgo(18 * 60 - 9),
     durationSec: 240,
   },
   {
@@ -45,8 +47,8 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-3',
     status: 'failed',
     jobName: 'unit-tests',
-    startedAt: '2026-04-27T12:11:00.000Z',
-    finishedAt: '2026-04-27T12:17:00.000Z',
+    startedAt: hoursAgo(21),
+    finishedAt: minutesAgo(21 * 60 - 6),
     durationSec: 360,
   },
   {
@@ -55,6 +57,6 @@ export const builds: Build[] = [
     pipelineId: 'pipeline-4',
     status: 'queued',
     jobName: 'security-scan',
-    startedAt: '2026-04-28T09:05:00.000Z',
+    startedAt: secondsAgo(1),
   },
 ];

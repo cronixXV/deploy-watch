@@ -1,3 +1,5 @@
+import { daysAgo, hoursAgo, minutesAgo, secondsAgo } from '../../lib/mock-date';
+
 import type { PipelineRun } from '../types/types';
 
 export const pipelineRuns: PipelineRun[] = [
@@ -10,7 +12,7 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Add payment retry strategy',
     authorId: 'user-2',
     triggeredById: 'user-2',
-    startedAt: '2026-04-28T08:45:00.000Z',
+    startedAt: secondsAgo(4),
     environment: 'staging',
   },
   {
@@ -22,8 +24,8 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Fix checkout summary layout',
     authorId: 'user-3',
     triggeredById: 'user-3',
-    startedAt: '2026-04-27T15:20:00.000Z',
-    finishedAt: '2026-04-27T15:29:00.000Z',
+    startedAt: hoursAgo(18),
+    finishedAt: hoursAgo(17.85),
     durationSec: 540,
     environment: 'production',
   },
@@ -36,8 +38,8 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Integrate Apple Pay flow',
     authorId: 'user-2',
     triggeredById: 'user-2',
-    startedAt: '2026-04-27T12:10:00.000Z',
-    finishedAt: '2026-04-27T12:17:00.000Z',
+    startedAt: hoursAgo(21),
+    finishedAt: hoursAgo(20.88),
     durationSec: 420,
     environment: 'testing',
   },
@@ -50,7 +52,7 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Rotate refresh token signing key',
     authorId: 'user-1',
     triggeredById: 'user-1',
-    startedAt: '2026-04-28T09:05:00.000Z',
+    startedAt: secondsAgo(1),
     environment: 'staging',
   },
   {
@@ -62,8 +64,8 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Improve session expiration handling',
     authorId: 'user-3',
     triggeredById: 'user-3',
-    startedAt: '2026-04-26T10:00:00.000Z',
-    finishedAt: '2026-04-26T10:13:00.000Z',
+    startedAt: daysAgo(2),
+    finishedAt: minutesAgo(2 * 24 * 60 - 13),
     durationSec: 780,
     environment: 'production',
   },
@@ -76,8 +78,8 @@ export const pipelineRuns: PipelineRun[] = [
     commitMessage: 'Test new revenue chart layout',
     authorId: 'user-4',
     triggeredById: 'user-4',
-    startedAt: '2026-04-25T13:30:00.000Z',
-    finishedAt: '2026-04-25T13:34:00.000Z',
+    startedAt: daysAgo(3),
+    finishedAt: minutesAgo(3 * 24 * 60 - 4),
     durationSec: 240,
     environment: 'development',
   },

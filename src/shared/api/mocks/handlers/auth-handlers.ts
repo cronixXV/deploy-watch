@@ -1,6 +1,7 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { users } from '../model/data/users';
+import { mockRandomDelay } from '../lib/mock-utils';
+import { mockState } from '../model/mock-state';
 
 import type { User } from '../model/types/types';
 
@@ -18,7 +19,7 @@ const MOCK_TOKEN = 'mock-token';
 
 export const authHandlers = [
   http.get('/auth/me', async ({ request }) => {
-    await delay(400);
+    await mockRandomDelay(300, 700);
 
     const authHeader = request.headers.get('Authorization');
 
@@ -26,13 +27,13 @@ export const authHandlers = [
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = users[0];
+    const user = mockState.users[0];
 
     return HttpResponse.json(user);
   }),
 
   http.post('/auth/login', async ({ request }) => {
-    await delay(600);
+    await mockRandomDelay(500, 1000);
 
     const body = (await request.json()) as LoginRequestBody;
 
@@ -43,7 +44,7 @@ export const authHandlers = [
       );
     }
 
-    const user = users.find((item) => item.email === body.email);
+    const user = mockState.users.find((item) => item.email === body.email);
 
     if (!user) {
       return HttpResponse.json(
@@ -61,7 +62,7 @@ export const authHandlers = [
   }),
 
   http.post('/auth/logout', async () => {
-    await delay(300);
+    await mockRandomDelay(200, 500);
 
     return HttpResponse.json({
       success: true,

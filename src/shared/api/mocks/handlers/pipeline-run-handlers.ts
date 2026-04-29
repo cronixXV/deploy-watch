@@ -1,7 +1,8 @@
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 
-import { builds } from '../model/data/builds';
-import { pipelineRuns } from '../model/data/pipeline-runs';
+import { mockRandomDelay, maybeMockError } from '../lib/mock-utils';
+import { updatePipelineRunStatus } from '../lib/status-transitions';
+import { mockState } from '../model/mock-state';
 
 import type { EnvironmentName, PipelineStatus } from '../model/types/types';
 
@@ -15,9 +16,19 @@ export const pipelineRunHandlers = [
   http.get(
     '/projects/:projectId/pipeline-runs',
     async ({ params, request }) => {
-      await delay(600);
+      await mockRandomDelay(400, 900);
 
-      const { projectId } = params;
+      const error = maybeMockError({
+        probability: 0.03,
+        message: 'Failed to load pipeline runs',
+        status: 500,
+      });
+
+      if (error) {
+        return error;
+      }
+
+      const projectId = String(params.projectId);
       const url = new URL(request.url);
 
       const status = getSearchParam(url, 'status') as PipelineStatus | null;
@@ -28,7 +39,9 @@ export const pipelineRunHandlers = [
         'environment',
       ) as EnvironmentName | null;
 
-      const result = pipelineRuns.filter((pipelineRun) => {
+      mockState.pipelineRuns.forEach(updatePipelineRunStatus);
+
+      const result = mockState.pipelineRuns.filter((pipelineRun) => {
         const matchesProject = pipelineRun.projectId === projectId;
         const matchesStatus = status ? pipelineRun.status === status : true;
         const matchesBranch = branch ? pipelineRun.branch === branch : true;
@@ -53,11 +66,23 @@ export const pipelineRunHandlers = [
   ),
 
   http.get('/pipeline-runs/:pipelineRunId', async ({ params }) => {
-    await delay(500);
+    await mockRandomDelay(300, 700);
 
-    const { pipelineRunId } = params;
+    const error = maybeMockError({
+      probability: 0.03,
+      message: 'Failed to load pipeline run',
+      status: 500,
+    });
 
-    const pipelineRun = pipelineRuns.find((item) => item.id === pipelineRunId);
+    if (error) {
+      return error;
+    }
+
+    const pipelineRunId = String(params.pipelineRunId);
+
+    const pipelineRun = mockState.pipelineRuns.find(
+      (item) => item.id === pipelineRunId,
+    );
 
     if (!pipelineRun) {
       return HttpResponse.json(
@@ -66,15 +91,19 @@ export const pipelineRunHandlers = [
       );
     }
 
+    updatePipelineRunStatus(pipelineRun);
+
     return HttpResponse.json(pipelineRun);
   }),
 
   http.get('/pipeline-runs/:pipelineRunId/builds', async ({ params }) => {
-    await delay(500);
+    await mockRandomDelay(300, 700);
 
-    const { pipelineRunId } = params;
+    const pipelineRunId = String(params.pipelineRunId);
 
-    const result = builds.filter((build) => build.pipelineId === pipelineRunId);
+    const result = mockState.builds.filter(
+      (build) => build.pipelineId === pipelineRunId,
+    );
 
     return HttpResponse.json(result);
   }),
