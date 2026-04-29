@@ -10,3 +10,5 @@ export {
   usePipelineRunQuery,
   useProjectPipelineRunsQuery,
 } from './model/api/pipeline-queries';
+
+export { PipelineStatusBadge } from './ui/pipeline-status-badge';

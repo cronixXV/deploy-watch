@@ -1,32 +1,104 @@
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { NavLink, Outlet } from 'react-router-dom';
 
-import styles from './appShell.module.css';
+const navItems = [
+  {
+    label: 'Projects',
+    to: '/projects',
+  },
+  {
+    label: 'Approvals',
+    to: '/approvals',
+  },
+  {
+    label: 'Settings',
+    to: '/settings',
+  },
+];
 
 export function AppShell() {
   return (
-    <div className={styles.shell}>
-      <aside className={styles.sidebar}>
-        <div className={styles.logo}>
-          Deploy<span className={styles.logoAccent}>Watch</span>
-        </div>
+    <Box minH="100vh" bg="gray.50" color="gray.900">
+      <Flex minH="100vh">
+        <Box
+          as="aside"
+          w="260px"
+          borderRightWidth="1px"
+          borderColor="gray.200"
+          bg="white"
+          px="4"
+          py="5"
+        >
+          <Heading mb="8" size="md" letterSpacing="-0.03em">
+            Deploy
+            <Box as="span" color="teal.600">
+              Watch
+            </Box>
+          </Heading>
 
-        <nav className={styles.nav}>
-          <NavLink to="/projects">Projects</NavLink>
-          <NavLink to="/approvals">Approvals</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
-        </nav>
-      </aside>
+          <VStack align="stretch" gap="1">
+            {navItems.map((item) => (
+              <LinkBox key={item.to}>
+                <LinkOverlay asChild>
+                  <NavLink to={item.to}>
+                    {({ isActive }) => (
+                      <Box
+                        borderRadius="md"
+                        px="3"
+                        py="2"
+                        color={isActive ? 'teal.700' : 'gray.600'}
+                        bg={isActive ? 'teal.50' : 'transparent'}
+                        fontSize="sm"
+                        fontWeight="medium"
+                        transition="background 0.15s ease, color 0.15s ease"
+                        _hover={{
+                          bg: isActive ? 'teal.50' : 'gray.100',
+                          color: isActive ? 'teal.700' : 'gray.900',
+                        }}
+                      >
+                        {item.label}
+                      </Box>
+                    )}
+                  </NavLink>
+                </LinkOverlay>
+              </LinkBox>
+            ))}
+          </VStack>
+        </Box>
 
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <span className={styles.headerTitle}>CI/CD Monitoring Dashboard</span>
-          <span className={styles.headerMeta}>Release Manager</span>
-        </header>
+        <Flex minW="0" flex="1" direction="column">
+          <HStack
+            as="header"
+            minH="64px"
+            justify="space-between"
+            borderBottomWidth="1px"
+            borderColor="gray.200"
+            bg="whiteAlpha.900"
+            px="8"
+          >
+            <Text fontSize="sm" fontWeight="semibold">
+              CI/CD Monitoring Dashboard
+            </Text>
 
-        <main className={styles.main}>
-          <Outlet />
-        </main>
-      </div>
-    </div>
+            <Text color="gray.500" fontSize="sm">
+              Release Manager
+            </Text>
+          </HStack>
+
+          <Box as="main" w="100%" maxW="1440px" p="8">
+            <Outlet />
+          </Box>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }

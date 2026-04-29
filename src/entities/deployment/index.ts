@@ -10,3 +10,5 @@ export {
   useProjectDeploymentsQuery,
   useRollbackDeploymentMutation,
 } from './model/api/deployment-queries';
+
+export { DeploymentStatusBadge } from './ui/deployment-status-badge';

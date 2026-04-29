@@ -10,3 +10,5 @@ export {
   useBuildQuery,
   useProjectBuildsQuery,
 } from './model/api/build-queries';
+
+export { BuildStatusBadge } from './ui/build-status-badge';

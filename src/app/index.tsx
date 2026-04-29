@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
+import { ChakraAppProvider } from './providers/chakra-provider';
 import { queryClient } from './providers/query-client';
 import { appRouter } from './router/app-router';
 import { appStore } from './store/app-store';
@@ -28,8 +29,10 @@ enableMocking().then(() => {
     <StrictMode>
       <Provider store={appStore}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={appRouter} />
-          <Toaster richColors position="top-right" />
+          <ChakraAppProvider>
+            <RouterProvider router={appRouter} />
+            <Toaster richColors position="top-right" />
+          </ChakraAppProvider>
         </QueryClientProvider>
       </Provider>
     </StrictMode>,
