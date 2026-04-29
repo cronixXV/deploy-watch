@@ -75,3 +75,15 @@ function isApiErrorResponse(value: unknown): value is ApiError {
     typeof value.message === 'string'
   );
 }
+
+export function getApiErrorMessage(error: unknown) {
+  if (isApiErrorResponse(error)) {
+    return error.message;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return 'Unexpected error';
+}

@@ -11,6 +11,7 @@ import { appRouter } from './router/app-router';
 import { appStore } from './store/app-store';
 
 import './index.css';
+import { AuthSessionInitializer } from '@/features/auth';
 
 async function enableMocking() {
   if (!import.meta.env.DEV) {
@@ -30,7 +31,10 @@ enableMocking().then(() => {
       <Provider store={appStore}>
         <QueryClientProvider client={queryClient}>
           <ChakraAppProvider>
-            <RouterProvider router={appRouter} />
+            <AuthSessionInitializer>
+              <RouterProvider router={appRouter} />
+            </AuthSessionInitializer>
+
             <Toaster richColors position="top-right" />
           </ChakraAppProvider>
         </QueryClientProvider>

@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-export type UserRole = 'viewer' | 'developer' | 'release_manager';
+import type { UserRole } from '@/shared/api/mocks/model/types/types';
 
 export type AuthUser = {
   id: string;
@@ -14,21 +14,14 @@ type AuthState = {
   user: AuthUser | null;
   token: string | null;
   isAuthenticated: boolean;
+  isSessionRestored: boolean;
 };
 
-const isDev = import.meta.env.DEV;
-
 const initialState: AuthState = {
-  user: isDev
-    ? {
-        id: 'user-1',
-        name: 'Alex Morgan',
-        email: 'alex@deploywatch.dev',
-        role: 'release_manager',
-      }
-    : null,
-  token: isDev ? 'mock-token' : null,
-  isAuthenticated: isDev,
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  isSessionRestored: false,
 };
 
 type LoginPayload = {
@@ -44,16 +37,23 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
+      state.isSessionRestored = true;
     },
 
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      state.isSessionRestored = true;
+    },
+
+    sessionRestoreFinished: (state) => {
+      state.isSessionRestored = true;
     },
   },
 });
 
-export const { loginSucceeded, logout } = authSlice.actions;
+export const { loginSucceeded, logout, sessionRestoreFinished } =
+  authSlice.actions;
 
 export const authReducer = authSlice.reducer;

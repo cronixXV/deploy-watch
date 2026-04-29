@@ -1,28 +1,12 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  LinkBox,
-  LinkOverlay,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { NavLink, Outlet } from 'react-router-dom';
 
+import { LogoutButton } from '@/features/auth';
+
 const navItems = [
-  {
-    label: 'Projects',
-    to: '/projects',
-  },
-  {
-    label: 'Approvals',
-    to: '/approvals',
-  },
-  {
-    label: 'Settings',
-    to: '/settings',
-  },
+  { label: 'Projects', to: '/projects' },
+  { label: 'Approvals', to: '/approvals' },
+  { label: 'Settings', to: '/settings' },
 ];
 
 export function AppShell() {
@@ -47,30 +31,26 @@ export function AppShell() {
 
           <VStack align="stretch" gap="1">
             {navItems.map((item) => (
-              <LinkBox key={item.to}>
-                <LinkOverlay asChild>
-                  <NavLink to={item.to}>
-                    {({ isActive }) => (
-                      <Box
-                        borderRadius="md"
-                        px="3"
-                        py="2"
-                        color={isActive ? 'teal.700' : 'gray.600'}
-                        bg={isActive ? 'teal.50' : 'transparent'}
-                        fontSize="sm"
-                        fontWeight="medium"
-                        transition="background 0.15s ease, color 0.15s ease"
-                        _hover={{
-                          bg: isActive ? 'teal.50' : 'gray.100',
-                          color: isActive ? 'teal.700' : 'gray.900',
-                        }}
-                      >
-                        {item.label}
-                      </Box>
-                    )}
-                  </NavLink>
-                </LinkOverlay>
-              </LinkBox>
+              <NavLink key={item.to} to={item.to}>
+                {({ isActive }) => (
+                  <Box
+                    borderRadius="md"
+                    px="3"
+                    py="2"
+                    color={isActive ? 'teal.700' : 'gray.600'}
+                    bg={isActive ? 'teal.50' : 'transparent'}
+                    fontSize="sm"
+                    fontWeight="medium"
+                    transition="background 0.15s ease, color 0.15s ease"
+                    _hover={{
+                      bg: isActive ? 'teal.50' : 'gray.100',
+                      color: isActive ? 'teal.700' : 'gray.900',
+                    }}
+                  >
+                    {item.label}
+                  </Box>
+                )}
+              </NavLink>
             ))}
           </VStack>
         </Box>
@@ -89,9 +69,13 @@ export function AppShell() {
               CI/CD Monitoring Dashboard
             </Text>
 
-            <Text color="gray.500" fontSize="sm">
-              Release Manager
-            </Text>
+            <HStack gap="4">
+              <Text color="gray.500" fontSize="sm">
+                Release Manager
+              </Text>
+
+              <LogoutButton />
+            </HStack>
           </HStack>
 
           <Box as="main" w="100%" maxW="1440px" p="8">

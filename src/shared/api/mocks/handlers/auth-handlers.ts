@@ -23,7 +23,7 @@ export const authHandlers = [
 
     const authHeader = request.headers.get('Authorization');
 
-    if (!authHeader) {
+    if (authHeader !== `Bearer ${MOCK_TOKEN}`) {
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
