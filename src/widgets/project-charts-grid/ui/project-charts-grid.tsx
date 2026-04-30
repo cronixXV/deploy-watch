@@ -3,6 +3,7 @@ import { Grid } from '@chakra-ui/react';
 import type {
   AverageBuildDurationChartItem,
   BuildStatusByDayChartItem,
+  DeployFrequencyChartItem,
   DeploymentActivityByEnvironmentChartItem,
   PipelineStatusDistributionChartItem,
 } from '@/entities/project';
@@ -10,6 +11,7 @@ import type {
 import {
   AverageBuildDurationChart,
   BuildStatusByDayChart,
+  DeployFrequencyChart,
   DeploymentActivityByEnvironmentChart,
   PipelineStatusDistributionChart,
 } from '@/widgets/charts';
@@ -19,6 +21,7 @@ type ProjectChartsGridProps = {
   averageBuildDurationByDay: AverageBuildDurationChartItem[];
   pipelineStatusDistribution: PipelineStatusDistributionChartItem[];
   deploymentActivityByEnvironment: DeploymentActivityByEnvironmentChartItem[];
+  deployFrequency: DeployFrequencyChartItem[];
 };
 
 export const ProjectChartsGrid = ({
@@ -26,6 +29,7 @@ export const ProjectChartsGrid = ({
   averageBuildDurationByDay,
   pipelineStatusDistribution,
   deploymentActivityByEnvironment,
+  deployFrequency,
 }: ProjectChartsGridProps) => {
   return (
     <Grid
@@ -44,6 +48,8 @@ export const ProjectChartsGrid = ({
       <DeploymentActivityByEnvironmentChart
         data={deploymentActivityByEnvironment}
       />
+
+      <DeployFrequencyChart data={deployFrequency} />
     </Grid>
   );
 };

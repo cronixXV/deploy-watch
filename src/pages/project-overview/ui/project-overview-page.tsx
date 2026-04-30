@@ -19,10 +19,12 @@ import {
   getAverageBuildDurationByDayChartData,
   getBuildStatusByDayChartData,
   getBuildSuccessRate,
+  getDeployFrequencyChartData,
   getDeploymentActivityByEnvironmentChartData,
   getHealthyEnvironmentsCount,
   getLastPipeline,
   getPipelineStatusDistributionChartData,
+  getRecentActivityItems,
   getRecentDeployments,
   useProjectQuery,
 } from '@/entities/project';
@@ -179,12 +181,21 @@ export function ProjectOverviewPage() {
   const deploymentActivityByEnvironment =
     getDeploymentActivityByEnvironmentChartData(deploymentsQuery.data);
 
+  const deployFrequency = getDeployFrequencyChartData(deploymentsQuery.data);
+
+  const recentActivityItems = getRecentActivityItems({
+    pipelineRuns: pipelineRunsQuery.data,
+    deployments: deploymentsQuery.data,
+    approvals: approvalsQuery.data,
+  });
+
   return (
     <ProjectOverviewDashboard
       averageBuildDuration={averageBuildDuration}
       averageBuildDurationByDay={averageBuildDurationByDay}
       buildStatusByDay={buildStatusByDay}
       deploymentActivityByEnvironment={deploymentActivityByEnvironment}
+      deployFrequency={deployFrequency}
       environments={environmentsQuery.data ?? []}
       healthyEnvironmentsCount={healthyEnvironmentsCount}
       isFetching={isFetching}
@@ -193,6 +204,7 @@ export function ProjectOverviewPage() {
       pipelineStatusDistribution={pipelineStatusDistribution}
       project={projectQuery.data}
       projectId={safeProjectId}
+      recentActivityItems={recentActivityItems}
       recentDeployments={recentDeployments}
       successRate={successRate}
       onRefresh={handleRefresh}

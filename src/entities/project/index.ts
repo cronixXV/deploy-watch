@@ -21,6 +21,7 @@ export {
   getBuildSuccessRate,
   getHealthyEnvironmentsCount,
   getRecentDeployments,
+  getStatusColor,
 } from './lib/get-info';
 
 export type {
@@ -28,6 +29,9 @@ export type {
   AverageBuildDurationChartItem,
   PipelineStatusDistributionChartItem,
   DeploymentActivityByEnvironmentChartItem,
+  DeployFrequencyChartItem,
+  RecentActivityItemType,
+  RecentActivityItem,
 } from './model/types/types';
 
 export {
@@ -35,4 +39,6 @@ export {
   getAverageBuildDurationByDayChartData,
   getPipelineStatusDistributionChartData,
   getDeploymentActivityByEnvironmentChartData,
+  getDeployFrequencyChartData,
+  getRecentActivityItems,
 } from './lib/chart-helpers';

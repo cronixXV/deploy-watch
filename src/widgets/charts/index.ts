@@ -2,3 +2,4 @@ export { DeploymentActivityByEnvironmentChart } from './ui/deployment-activity-b
 export { PipelineStatusDistributionChart } from './ui/pipeline-status-distribution-chart';
 export { AverageBuildDurationChart } from './ui/average-build-duration-chart';
 export { BuildStatusByDayChart } from './ui/build-status-by-day-chart';
+export { DeployFrequencyChart } from './ui/deploy-frequency-chart';

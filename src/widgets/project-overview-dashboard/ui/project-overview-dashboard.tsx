@@ -5,13 +5,16 @@ import { EnvironmentHealthCard } from './environment-health-card';
 import { LatestPipelineCard } from './latest-pipeline-card';
 import { OpenApprovalsCard } from './open-approvals-card';
 import { ProjectOverviewHeader } from './project-overview-header';
+import { RecentActivityWidget } from './recent-activity-widget';
 import { RecentDeploymentsCard } from './recent-deployments-card';
 
 import type {
   AverageBuildDurationChartItem,
   BuildStatusByDayChartItem,
   DeploymentActivityByEnvironmentChartItem,
+  DeployFrequencyChartItem,
   PipelineStatusDistributionChartItem,
+  RecentActivityItem,
 } from '@/entities/project';
 import type {
   Deployment,
@@ -38,6 +41,8 @@ type ProjectOverviewDashboardProps = {
   averageBuildDurationByDay: AverageBuildDurationChartItem[];
   pipelineStatusDistribution: PipelineStatusDistributionChartItem[];
   deploymentActivityByEnvironment: DeploymentActivityByEnvironmentChartItem[];
+  deployFrequency: DeployFrequencyChartItem[];
+  recentActivityItems: RecentActivityItem[];
 };
 
 export const ProjectOverviewDashboard = ({
@@ -56,6 +61,8 @@ export const ProjectOverviewDashboard = ({
   averageBuildDurationByDay,
   pipelineStatusDistribution,
   deploymentActivityByEnvironment,
+  deployFrequency,
+  recentActivityItems,
 }: ProjectOverviewDashboardProps) => {
   return (
     <Stack gap="6">
@@ -85,6 +92,7 @@ export const ProjectOverviewDashboard = ({
         averageBuildDurationByDay={averageBuildDurationByDay}
         buildStatusByDay={buildStatusByDay}
         deploymentActivityByEnvironment={deploymentActivityByEnvironment}
+        deployFrequency={deployFrequency}
         pipelineStatusDistribution={pipelineStatusDistribution}
       />
 
@@ -101,14 +109,14 @@ export const ProjectOverviewDashboard = ({
           projectId={projectId}
         />
 
-        <Stack gap="4">
-          <EnvironmentHealthCard
-            environments={environments}
-            healthyCount={healthyEnvironmentsCount}
-          />
+        <EnvironmentHealthCard
+          environments={environments}
+          healthyCount={healthyEnvironmentsCount}
+        />
 
-          <OpenApprovalsCard count={openApprovalsCount} />
-        </Stack>
+        <RecentActivityWidget items={recentActivityItems} />
+
+        <OpenApprovalsCard count={openApprovalsCount} />
       </Grid>
     </Stack>
   );

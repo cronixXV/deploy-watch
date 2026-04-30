@@ -6,6 +6,45 @@ import type {
   ProjectHealth,
 } from '@/shared/api/mocks/model/types/types';
 
+export function getStatusColor(status?: string) {
+  switch (status) {
+    case 'success':
+    case 'healthy':
+    case 'deployed':
+    case 'approved':
+      return 'green';
+
+    case 'failed':
+    case 'down':
+    case 'rejected':
+      return 'red';
+
+    case 'running':
+    case 'deploying':
+      return 'blue';
+
+    case 'queued':
+    case 'pending':
+      return 'gray';
+
+    case 'waiting_approval':
+      return 'yellow';
+
+    case 'rolled_back':
+      return 'purple';
+
+    case 'degraded':
+      return 'orange';
+
+    case 'canceled':
+    case 'locked':
+      return 'gray';
+
+    default:
+      return 'gray';
+  }
+}
+
 export function getPipelineStatusColor(status?: PipelineRun['status']) {
   switch (status) {
     case 'success':
