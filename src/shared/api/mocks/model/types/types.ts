@@ -1,4 +1,5 @@
 export type UserRole = 'viewer' | 'developer' | 'release_manager';
+export type ProjectHealth = 'healthy' | 'running' | 'warning' | 'critical';
 
 export type User = {
   id: string;

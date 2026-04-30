@@ -1,7 +1,9 @@
 import { Box, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { NavLink, Outlet } from 'react-router-dom';
 
+import { useAppSelector } from '@/app/store/hooks';
 import { LogoutButton } from '@/features/auth';
+import { formatRole } from '@/shared/api/mocks/lib/format-role';
 
 const navItems = [
   { label: 'Projects', to: '/projects' },
@@ -10,6 +12,8 @@ const navItems = [
 ];
 
 export function AppShell() {
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <Box minH="100vh" bg="gray.50" color="gray.900">
       <Flex minH="100vh">
@@ -70,9 +74,15 @@ export function AppShell() {
             </Text>
 
             <HStack gap="4">
-              <Text color="gray.500" fontSize="sm">
-                Release Manager
-              </Text>
+              <Box textAlign="right">
+                <Text color="gray.700" fontSize="sm" fontWeight="medium">
+                  {user?.name ?? 'Unknown user'}
+                </Text>
+
+                <Text color="gray.500" fontSize="xs">
+                  {formatRole(user?.role)}
+                </Text>
+              </Box>
 
               <LogoutButton />
             </HStack>
