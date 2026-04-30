@@ -33,3 +33,10 @@ export function formatDuration(seconds?: number) {
 
   return `${minutes}m ${restSeconds}s`;
 }
+
+export function getDayKey(value: string) {
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(value));
+}

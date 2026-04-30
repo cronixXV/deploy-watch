@@ -16,9 +16,13 @@ import { useProjectEnvironmentsQuery } from '@/entities/environment';
 import { useProjectPipelineRunsQuery } from '@/entities/pipeline';
 import {
   getAverageBuildDuration,
+  getAverageBuildDurationByDayChartData,
+  getBuildStatusByDayChartData,
   getBuildSuccessRate,
+  getDeploymentActivityByEnvironmentChartData,
   getHealthyEnvironmentsCount,
   getLastPipeline,
+  getPipelineStatusDistributionChartData,
   getRecentDeployments,
   useProjectQuery,
 } from '@/entities/project';
@@ -162,14 +166,31 @@ export function ProjectOverviewPage() {
     environmentsQuery.data,
   );
 
+  const buildStatusByDay = getBuildStatusByDayChartData(buildsQuery.data);
+
+  const averageBuildDurationByDay = getAverageBuildDurationByDayChartData(
+    buildsQuery.data,
+  );
+
+  const pipelineStatusDistribution = getPipelineStatusDistributionChartData(
+    pipelineRunsQuery.data,
+  );
+
+  const deploymentActivityByEnvironment =
+    getDeploymentActivityByEnvironmentChartData(deploymentsQuery.data);
+
   return (
     <ProjectOverviewDashboard
       averageBuildDuration={averageBuildDuration}
+      averageBuildDurationByDay={averageBuildDurationByDay}
+      buildStatusByDay={buildStatusByDay}
+      deploymentActivityByEnvironment={deploymentActivityByEnvironment}
       environments={environmentsQuery.data ?? []}
       healthyEnvironmentsCount={healthyEnvironmentsCount}
       isFetching={isFetching}
       latestPipeline={latestPipeline}
       openApprovalsCount={approvalsQuery.data?.length ?? 0}
+      pipelineStatusDistribution={pipelineStatusDistribution}
       project={projectQuery.data}
       projectId={safeProjectId}
       recentDeployments={recentDeployments}

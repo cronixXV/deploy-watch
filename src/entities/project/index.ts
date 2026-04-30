@@ -22,3 +22,17 @@ export {
   getHealthyEnvironmentsCount,
   getRecentDeployments,
 } from './lib/get-info';
+
+export type {
+  BuildStatusByDayChartItem,
+  AverageBuildDurationChartItem,
+  PipelineStatusDistributionChartItem,
+  DeploymentActivityByEnvironmentChartItem,
+} from './model/types/types';
+
+export {
+  getBuildStatusByDayChartData,
+  getAverageBuildDurationByDayChartData,
+  getPipelineStatusDistributionChartData,
+  getDeploymentActivityByEnvironmentChartData,
+} from './lib/chart-helpers';

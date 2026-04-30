@@ -8,11 +8,19 @@ import { ProjectOverviewHeader } from './project-overview-header';
 import { RecentDeploymentsCard } from './recent-deployments-card';
 
 import type {
+  AverageBuildDurationChartItem,
+  BuildStatusByDayChartItem,
+  DeploymentActivityByEnvironmentChartItem,
+  PipelineStatusDistributionChartItem,
+} from '@/entities/project';
+import type {
   Deployment,
   Environment,
   PipelineRun,
   Project,
 } from '@/shared/api/mocks/model/types/types';
+
+import { ProjectChartsGrid } from '@/widgets/project-charts-grid';
 
 type ProjectOverviewDashboardProps = {
   project?: Project;
@@ -26,6 +34,10 @@ type ProjectOverviewDashboardProps = {
   openApprovalsCount: number;
   isFetching: boolean;
   onRefresh: () => void;
+  buildStatusByDay: BuildStatusByDayChartItem[];
+  averageBuildDurationByDay: AverageBuildDurationChartItem[];
+  pipelineStatusDistribution: PipelineStatusDistributionChartItem[];
+  deploymentActivityByEnvironment: DeploymentActivityByEnvironmentChartItem[];
 };
 
 export const ProjectOverviewDashboard = ({
@@ -40,6 +52,10 @@ export const ProjectOverviewDashboard = ({
   openApprovalsCount,
   isFetching,
   onRefresh,
+  buildStatusByDay,
+  averageBuildDurationByDay,
+  pipelineStatusDistribution,
+  deploymentActivityByEnvironment,
 }: ProjectOverviewDashboardProps) => {
   return (
     <Stack gap="6">
@@ -50,6 +66,7 @@ export const ProjectOverviewDashboard = ({
       />
 
       <Grid
+        as="section"
         gap="4"
         templateColumns={{
           base: '1fr',
@@ -64,7 +81,15 @@ export const ProjectOverviewDashboard = ({
         />
       </Grid>
 
+      <ProjectChartsGrid
+        averageBuildDurationByDay={averageBuildDurationByDay}
+        buildStatusByDay={buildStatusByDay}
+        deploymentActivityByEnvironment={deploymentActivityByEnvironment}
+        pipelineStatusDistribution={pipelineStatusDistribution}
+      />
+
       <Grid
+        as="section"
         gap="4"
         templateColumns={{
           base: '1fr',
