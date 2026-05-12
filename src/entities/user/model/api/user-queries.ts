@@ -1,10 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getCurrentUser } from './user-api';
+import { getCurrentUser, getUsers } from './user-api';
 
 export const userQueries = {
-  all: ['user'] as const,
+  all: ['users'] as const,
+
   current: () => [...userQueries.all, 'current'] as const,
+
+  lists: () => [...userQueries.all, 'list'] as const,
+  list: () => [...userQueries.lists()] as const,
 };
 
 export function useCurrentUserQuery() {
@@ -12,5 +16,12 @@ export function useCurrentUserQuery() {
     queryKey: userQueries.current(),
     queryFn: getCurrentUser,
     retry: false,
+  });
+}
+
+export function useUsersQuery() {
+  return useQuery({
+    queryKey: userQueries.list(),
+    queryFn: getUsers,
   });
 }

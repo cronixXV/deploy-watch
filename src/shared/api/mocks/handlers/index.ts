@@ -5,6 +5,7 @@ import { deploymentHandlers } from './deployment-handlers';
 import { environmentHandlers } from './environment-handlers';
 import { pipelineRunHandlers } from './pipeline-run-handlers';
 import { projectHandlers } from './project-handlers';
+import { userHandlers } from './user-handlers';
 
 export const handlers = [
   ...authHandlers,
@@ -14,4 +15,5 @@ export const handlers = [
   ...environmentHandlers,
   ...deploymentHandlers,
   ...approvalHandlers,
+  ...userHandlers,
 ];

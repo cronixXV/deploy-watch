@@ -7,3 +7,9 @@ export async function getCurrentUser() {
 
   return response.data;
 }
+
+export async function getUsers() {
+  const response = await apiClient.get<User[]>('/users');
+
+  return response.data;
+}

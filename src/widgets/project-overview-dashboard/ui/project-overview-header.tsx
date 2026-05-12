@@ -1,19 +1,22 @@
 import { Box, Button, Heading, HStack, Text } from '@chakra-ui/react';
 import { RefreshCw } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 
 import type { Project } from '@/shared/api/mocks/model/types/types';
 
 type ProjectOverviewHeaderProps = {
   project?: Project;
+  projectId: string;
   isFetching: boolean;
   onRefresh: () => void;
 };
 
-export const ProjectOverviewHeader = ({
+export function ProjectOverviewHeader({
   project,
+  projectId,
   isFetching,
   onRefresh,
-}: ProjectOverviewHeaderProps) => {
+}: ProjectOverviewHeaderProps) {
   return (
     <HStack align="start" justify="space-between">
       <Box>
@@ -24,16 +27,24 @@ export const ProjectOverviewHeader = ({
         </Text>
       </Box>
 
-      <Button
-        colorPalette="teal"
-        loading={isFetching}
-        size="sm"
-        variant="outline"
-        onClick={onRefresh}
-      >
-        <RefreshCw size={16} />
-        Refresh
-      </Button>
+      <HStack gap="2">
+        <Button colorPalette="teal" size="sm" variant="outline" asChild>
+          <RouterLink to={`/projects/${projectId}/pipelines`}>
+            View pipelines
+          </RouterLink>
+        </Button>
+
+        <Button
+          colorPalette="teal"
+          loading={isFetching}
+          size="sm"
+          variant="outline"
+          onClick={onRefresh}
+        >
+          <RefreshCw size={16} />
+          Refresh
+        </Button>
+      </HStack>
     </HStack>
   );
-};
+}

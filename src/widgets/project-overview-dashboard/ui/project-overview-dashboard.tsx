@@ -69,6 +69,7 @@ export const ProjectOverviewDashboard = ({
       <ProjectOverviewHeader
         isFetching={isFetching}
         project={project}
+        projectId={projectId}
         onRefresh={onRefresh}
       />
 

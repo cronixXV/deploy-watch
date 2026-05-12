@@ -1,3 +1,7 @@
-export { getCurrentUser } from './model/api/user-api';
+export { getCurrentUser, getUsers } from './model/api/user-api';
 
-export { userQueries, useCurrentUserQuery } from './model/api/user-queries';
+export {
+  userQueries,
+  useCurrentUserQuery,
+  useUsersQuery,
+} from './model/api/user-queries';
