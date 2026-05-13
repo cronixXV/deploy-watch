@@ -10,16 +10,32 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { RefreshCw } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 
-import { useProjectPipelineRunsQuery } from '@/entities/pipeline';
+import {
+  getPipelineFiltersFromSearchParams,
+  filterPipelineRunsByDateRange,
+  resetPipelineFilters,
+  setSearchParamValue,
+  type PipelineFilters,
+  useProjectPipelineRunsMetaQuery,
+  useProjectPipelineRunsQuery,
+} from '@/entities/pipeline';
 import { useProjectQuery } from '@/entities/project';
 import { useUsersQuery } from '@/entities/user';
+import { PipelineRunsFilters } from '@/features/pipeline-runs-filters';
 import { getApiErrorMessage } from '@/shared/api/client/client';
 import { PipelineRunsTable } from '@/widgets/pipeline-runs-table';
 
-export function PipelinesPage() {
+export const PipelinesPage = () => {
   const { projectId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const filters = useMemo(
+    () => getPipelineFiltersFromSearchParams(searchParams),
+    [searchParams],
+  );
 
   const safeProjectId = projectId ?? '';
 
@@ -27,31 +43,67 @@ export function PipelinesPage() {
 
   const pipelineRunsQuery = useProjectPipelineRunsQuery({
     projectId: safeProjectId,
+    status: filters.status,
+    branch: filters.branch,
+    authorId: filters.authorId,
+    environment: filters.environment,
   });
+
+  const pipelineRunsMetaQuery = useProjectPipelineRunsMetaQuery(safeProjectId);
 
   const usersQuery = useUsersQuery();
 
   const isLoading =
     projectQuery.isLoading ||
     pipelineRunsQuery.isLoading ||
-    usersQuery.isLoading;
+    usersQuery.isLoading ||
+    pipelineRunsMetaQuery.isLoading;
 
   const isError =
-    projectQuery.isError || pipelineRunsQuery.isError || usersQuery.isError;
+    projectQuery.isError ||
+    pipelineRunsQuery.isError ||
+    usersQuery.isError ||
+    pipelineRunsMetaQuery.isError;
 
   const error =
-    projectQuery.error ?? pipelineRunsQuery.error ?? usersQuery.error;
+    projectQuery.error ??
+    pipelineRunsQuery.error ??
+    usersQuery.error ??
+    pipelineRunsMetaQuery.error;
 
   const isFetching =
     projectQuery.isFetching ||
     pipelineRunsQuery.isFetching ||
-    usersQuery.isFetching;
+    usersQuery.isFetching ||
+    pipelineRunsMetaQuery.isFetching;
 
   const handleRefresh = () => {
     projectQuery.refetch();
     pipelineRunsQuery.refetch();
     usersQuery.refetch();
+    pipelineRunsMetaQuery.refetch();
   };
+
+  const handleFilterChange = (name: keyof PipelineFilters, value: string) => {
+    setSearchParams(setSearchParamValue(searchParams, name, value));
+  };
+
+  const handleResetFilters = () => {
+    setSearchParams(resetPipelineFilters());
+  };
+
+  const branches = pipelineRunsMetaQuery.data?.branches ?? [];
+
+  const filteredPipelineRuns = useMemo(
+    () => filterPipelineRunsByDateRange(pipelineRunsQuery.data ?? [], filters),
+    [pipelineRunsQuery.data, filters],
+  );
+
+  const pipelineAuthorIds = pipelineRunsMetaQuery.data?.authorIds ?? [];
+
+  const pipelineAuthors = (usersQuery.data ?? []).filter((user) =>
+    pipelineAuthorIds.includes(user.id),
+  );
 
   if (!safeProjectId) {
     return (
@@ -138,9 +190,17 @@ export function PipelinesPage() {
         </Button>
       </HStack>
 
-      {pipelineRunsQuery.data?.length ? (
+      <PipelineRunsFilters
+        branches={branches}
+        filters={filters}
+        users={pipelineAuthors}
+        onFilterChange={handleFilterChange}
+        onReset={handleResetFilters}
+      />
+
+      {filteredPipelineRuns.length ? (
         <PipelineRunsTable
-          pipelineRuns={pipelineRunsQuery.data}
+          pipelineRuns={filteredPipelineRuns}
           projectId={safeProjectId}
           users={usersQuery.data ?? []}
         />
@@ -151,7 +211,7 @@ export function PipelinesPage() {
               <Heading size="sm">No pipeline runs found</Heading>
 
               <Text color="gray.500" fontSize="sm" mt="2">
-                Once pipelines are triggered, they will appear here.
+                Try changing filters or refreshing the page.
               </Text>
             </Box>
           </Card.Body>
@@ -159,4 +219,4 @@ export function PipelinesPage() {
       )}
     </Stack>
   );
-}
+};

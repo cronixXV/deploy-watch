@@ -2,6 +2,7 @@ import type {
   Build,
   EnvironmentName,
   PipelineRun,
+  PipelineRunsMeta,
   PipelineStatus,
 } from '@/shared/api/mocks/model/types/types';
 
@@ -48,6 +49,14 @@ export async function getPipelineRunById(pipelineRunId: string) {
 export async function getPipelineRunBuilds(pipelineRunId: string) {
   const response = await apiClient.get<Build[]>(
     `/pipeline-runs/${pipelineRunId}/builds`,
+  );
+
+  return response.data;
+}
+
+export async function getProjectPipelineRunsMeta(projectId: string) {
+  const response = await apiClient.get<PipelineRunsMeta>(
+    `/projects/${projectId}/pipeline-runs/meta`,
   );
 
   return response.data;

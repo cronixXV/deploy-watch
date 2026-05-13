@@ -4,6 +4,7 @@ import {
   getPipelineRunBuilds,
   getPipelineRunById,
   getProjectPipelineRuns,
+  getProjectPipelineRunsMeta,
   type GetProjectPipelineRunsParams,
 } from './pipeline-api';
 
@@ -22,6 +23,9 @@ export const pipelineQueries = {
 
   builds: (pipelineRunId: string) =>
     [...pipelineQueries.detail(pipelineRunId), 'builds'] as const,
+
+  meta: (projectId: string) =>
+    [...pipelineQueries.all, 'meta', projectId] as const,
 };
 
 function shouldPollPipelineRun(pipelineRun?: PipelineRun) {
@@ -66,5 +70,13 @@ export function usePipelineRunBuildsQuery(pipelineRunId: string) {
     queryFn: () => getPipelineRunBuilds(pipelineRunId),
     enabled: Boolean(pipelineRunId),
     refetchInterval: 3000,
+  });
+}
+
+export function useProjectPipelineRunsMetaQuery(projectId: string) {
+  return useQuery({
+    queryKey: pipelineQueries.meta(projectId),
+    queryFn: () => getProjectPipelineRunsMeta(projectId),
+    enabled: Boolean(projectId),
   });
 }

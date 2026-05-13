@@ -94,6 +94,12 @@ export type Environment = {
   locked: boolean;
 };
 
+export type PipelineRunsMeta = {
+  branches: string[];
+  environments: EnvironmentName[];
+  authorIds: string[];
+};
+
 export type DeploymentStatus =
   | 'pending'
   | 'waiting_approval'

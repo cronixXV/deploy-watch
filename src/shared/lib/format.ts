@@ -40,3 +40,20 @@ export function getDayKey(value: string) {
     day: 'numeric',
   }).format(new Date(value));
 }
+
+export const toIsoDate = (value?: string) => {
+  if (!value) return '';
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+  if (match) {
+    const [, month, day, year] = match;
+    return `${year}-${month}-${day}`;
+  }
+
+  return '';
+};

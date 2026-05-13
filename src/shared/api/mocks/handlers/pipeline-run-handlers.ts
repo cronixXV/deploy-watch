@@ -107,4 +107,36 @@ export const pipelineRunHandlers = [
 
     return HttpResponse.json(result);
   }),
+
+  http.get('/projects/:projectId/pipeline-runs/meta', async ({ params }) => {
+    await mockRandomDelay(300, 700);
+
+    const { projectId } = params;
+
+    const projectPipelineRuns = mockState.pipelineRuns.filter(
+      (pipelineRun) => pipelineRun.projectId === projectId,
+    );
+
+    const branches = Array.from(
+      new Set(projectPipelineRuns.map((pipelineRun) => pipelineRun.branch)),
+    ).sort();
+
+    const environments = Array.from(
+      new Set(
+        projectPipelineRuns
+          .map((pipelineRun) => pipelineRun.environment)
+          .filter(Boolean),
+      ),
+    ).sort();
+
+    const authorIds = Array.from(
+      new Set(projectPipelineRuns.map((pipelineRun) => pipelineRun.authorId)),
+    ).sort();
+
+    return HttpResponse.json({
+      branches,
+      environments,
+      authorIds,
+    });
+  }),
 ];
