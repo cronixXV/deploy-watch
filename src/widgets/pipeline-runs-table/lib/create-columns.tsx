@@ -56,6 +56,7 @@ export function createPipelineRunsColumns({
     {
       accessorKey: 'commitHash',
       header: 'Commit',
+      enableSorting: false,
       cell: ({ row }) => (
         <Box maxW="320px">
           <Text fontFamily="mono" fontSize="sm">
@@ -86,6 +87,12 @@ export function createPipelineRunsColumns({
     {
       accessorKey: 'startedAt',
       header: 'Started at',
+      sortingFn: (rowA, rowB) => {
+        return (
+          new Date(rowA.original.startedAt).getTime() -
+          new Date(rowB.original.startedAt).getTime()
+        );
+      },
       cell: ({ row }) => (
         <Text color="gray.600" fontSize="sm">
           {formatDate(row.original.startedAt)}
@@ -95,6 +102,11 @@ export function createPipelineRunsColumns({
     {
       accessorKey: 'durationSec',
       header: 'Duration',
+      sortingFn: (rowA, rowB) => {
+        return (
+          (rowA.original.durationSec ?? 0) - (rowB.original.durationSec ?? 0)
+        );
+      },
       cell: ({ row }) => (
         <Text color="gray.600" fontSize="sm">
           {formatDuration(row.original.durationSec)}
@@ -118,6 +130,7 @@ export function createPipelineRunsColumns({
     {
       id: 'actions',
       header: 'Actions',
+      enableSorting: false,
       cell: ({ row }) => (
         <HStack justify="flex-end">
           <Button colorPalette="teal" size="sm" variant="ghost" asChild>
