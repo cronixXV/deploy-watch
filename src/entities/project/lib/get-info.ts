@@ -98,6 +98,22 @@ export function getEnvironmentStatusColor(status?: Environment['status']) {
   }
 }
 
+export function getBuildStatusColor(status: Build['status']) {
+  switch (status) {
+    case 'success':
+      return 'green';
+    case 'failed':
+      return 'red';
+    case 'running':
+      return 'blue';
+    case 'queued':
+    case 'canceled':
+      return 'gray';
+    default:
+      return 'gray';
+  }
+}
+
 export function getHealthColor(health: ProjectHealth) {
   switch (health) {
     case 'healthy':

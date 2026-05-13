@@ -29,7 +29,7 @@ import {
   useProjectQuery,
 } from '@/entities/project';
 import { getApiErrorMessage } from '@/shared/api/client/client';
-import { ProjectOverviewDashboard } from '@/widgets/project-overview-dashboard';
+import { ProjectOverviewDashboard } from '@/widgets/projects';
 
 export function ProjectOverviewPage() {
   const { projectId } = useParams();

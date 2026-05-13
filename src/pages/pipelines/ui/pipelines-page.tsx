@@ -26,7 +26,7 @@ import { useProjectQuery } from '@/entities/project';
 import { useUsersQuery } from '@/entities/user';
 import { PipelineRunsFilters } from '@/features/pipeline-runs-filters';
 import { getApiErrorMessage } from '@/shared/api/client/client';
-import { PipelineRunsTable } from '@/widgets/pipeline-runs-table';
+import { PipelineRunsTable } from '@/widgets/pipeline';
 
 export const PipelinesPage = () => {
   const { projectId } = useParams();

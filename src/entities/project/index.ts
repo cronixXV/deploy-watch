@@ -22,6 +22,7 @@ export {
   getHealthyEnvironmentsCount,
   getRecentDeployments,
   getStatusColor,
+  getBuildStatusColor,
 } from './lib/get-info';
 
 export type {

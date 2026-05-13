@@ -23,7 +23,7 @@ import type {
   Project,
 } from '@/shared/api/mocks/model/types/types';
 
-import { ProjectChartsGrid } from '@/widgets/project-charts-grid';
+import { ProjectChartsGrid } from '@/widgets/projects';
 
 type ProjectOverviewDashboardProps = {
   project?: Project;

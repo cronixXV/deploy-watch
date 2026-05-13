@@ -12,7 +12,7 @@ import { RefreshCw } from 'lucide-react';
 
 import { useProjectsQuery } from '@/entities/project';
 import { getApiErrorMessage } from '@/shared/api/client/client';
-import { ProjectSummaryCard } from '@/widgets/project-summary';
+import { ProjectSummaryCard } from '@/widgets/projects';
 
 export const ProjectsPage = () => {
   const {
