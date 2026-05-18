@@ -57,3 +57,11 @@ export const toIsoDate = (value?: string) => {
 
   return '';
 };
+
+export function formatLogTimestamp(value: string) {
+  return new Intl.DateTimeFormat('en', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(value));
+}

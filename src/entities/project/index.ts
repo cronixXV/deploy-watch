@@ -23,6 +23,7 @@ export {
   getRecentDeployments,
   getStatusColor,
   getBuildStatusColor,
+  getLogLevelColor,
 } from './lib/get-info';
 
 export type {

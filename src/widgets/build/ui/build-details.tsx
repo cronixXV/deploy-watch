@@ -8,6 +8,7 @@ import { BuildSummaryCard } from './build-summary-card';
 import { isLiveBuild } from '@/entities/build/lib/build-details';
 import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
 import { SkeletonLoader } from '@/shared/ui/skeleton/skeleton-loader';
+import { BuildLogsViewer } from '@/widgets/build-logs-viewer';
 
 type BuildDetailsProps = {
   projectId?: string;
@@ -70,6 +71,8 @@ export const BuildDetails = ({ projectId, buildId }: BuildDetailsProps) => {
         pipelineRun={pipelineRun}
         projectId={projectId}
       />
+
+      <BuildLogsViewer buildId={buildId} />
     </Stack>
   );
 };

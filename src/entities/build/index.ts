@@ -12,3 +12,5 @@ export {
 } from './model/api/build-queries';
 
 export { BuildStatusBadge } from './ui/build-status-badge';
+
+export type { LogLevelFilter } from './model/types/types';

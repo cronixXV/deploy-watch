@@ -1,5 +1,6 @@
 import type {
   Build,
+  BuildLogLine,
   Deployment,
   Environment,
   PipelineRun,
@@ -141,6 +142,21 @@ export function getHealthLabel(health: ProjectHealth) {
       return 'Critical';
     default:
       return 'Unknown';
+  }
+}
+
+export function getLogLevelColor(level: BuildLogLine['level']) {
+  switch (level) {
+    case 'info':
+      return 'blue';
+    case 'warning':
+      return 'yellow';
+    case 'error':
+      return 'red';
+    case 'debug':
+      return 'gray';
+    default:
+      return 'gray';
   }
 }
 
