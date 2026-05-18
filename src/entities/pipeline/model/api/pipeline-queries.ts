@@ -8,7 +8,7 @@ import {
   type GetProjectPipelineRunsParams,
 } from './pipeline-api';
 
-import type { PipelineRun } from '@/shared/api/mocks/model/types/types';
+import type { Build, PipelineRun } from '@/shared/api/mocks/model/types/types';
 
 export const pipelineQueries = {
   all: ['pipeline-runs'] as const,
@@ -30,6 +30,12 @@ export const pipelineQueries = {
 
 function shouldPollPipelineRun(pipelineRun?: PipelineRun) {
   return pipelineRun?.status === 'queued' || pipelineRun?.status === 'running';
+}
+
+function shouldPollBuilds(builds?: Build[]) {
+  return builds?.some(
+    (build) => build.status === 'queued' || build.status === 'running',
+  );
 }
 
 export function useProjectPipelineRunsQuery(
@@ -69,10 +75,13 @@ export function usePipelineRunBuildsQuery(pipelineRunId: string) {
     queryKey: pipelineQueries.builds(pipelineRunId),
     queryFn: () => getPipelineRunBuilds(pipelineRunId),
     enabled: Boolean(pipelineRunId),
-    refetchInterval: 3000,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+
+      return shouldPollBuilds(data) ? 3000 : false;
+    },
   });
 }
-
 export function useProjectPipelineRunsMetaQuery(projectId: string) {
   return useQuery({
     queryKey: pipelineQueries.meta(projectId),

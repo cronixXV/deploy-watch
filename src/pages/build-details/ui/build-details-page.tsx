@@ -1,8 +1,9 @@
+import { useParams } from 'react-router-dom';
+
+import { BuildDetails } from '@/widgets/build';
+
 export const BuildDetailsPage = () => {
-  return (
-    <main>
-      <h1>Build details</h1>
-      <p>Build logs will be here</p>
-    </main>
-  );
+  const { projectId, buildId } = useParams();
+
+  return <BuildDetails projectId={projectId} buildId={buildId} />;
 };

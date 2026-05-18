@@ -2,21 +2,23 @@ import { Button, Card, Heading, Stack, Text } from '@chakra-ui/react';
 
 import { getApiErrorMessage } from '@/shared/api/client/client';
 
-type PipelineDetailsErrorProps = {
-  message?: string;
+type PageErrorStateProps = {
+  title?: string;
+  message: string;
   error?: unknown;
   isFetching?: boolean;
   onRetry?: () => void;
 };
 
-export const PipelineDetailsError = ({
-  message = 'Failed to load pipeline details',
+export const PageErrorState = ({
+  title,
+  message,
   error,
   isFetching = false,
   onRetry,
-}: PipelineDetailsErrorProps) => (
+}: PageErrorStateProps) => (
   <Stack gap="4">
-    <Heading size="lg">Pipeline details</Heading>
+    {title && <Heading size="lg">{title}</Heading>}
 
     <Card.Root bg="red.50" borderColor="red.200">
       <Card.Body>

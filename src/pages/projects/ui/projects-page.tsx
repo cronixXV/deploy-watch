@@ -11,7 +11,7 @@ import {
 import { RefreshCw } from 'lucide-react';
 
 import { useProjectsQuery } from '@/entities/project';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
 import { ProjectSummaryCard } from '@/widgets/projects';
 
 export const ProjectsPage = () => {
@@ -52,38 +52,13 @@ export const ProjectsPage = () => {
 
   if (isError) {
     return (
-      <Stack gap="4">
-        <Heading size="lg">Projects</Heading>
-
-        <Box
-          rounded="xl"
-          borderWidth="1px"
-          borderColor="red.200"
-          bg="red.50"
-          p="6"
-        >
-          <Stack gap="3">
-            <Text color="red.700" fontWeight="semibold">
-              Failed to load projects
-            </Text>
-
-            <Text color="red.600" fontSize="sm">
-              {getApiErrorMessage(error)}
-            </Text>
-
-            <Button
-              alignSelf="flex-start"
-              colorPalette="red"
-              loading={isFetching}
-              size="sm"
-              variant="outline"
-              onClick={() => refetch()}
-            >
-              Retry
-            </Button>
-          </Stack>
-        </Box>
-      </Stack>
+      <PageErrorState
+        title="Projects"
+        message="Failed to load projects"
+        error={error}
+        isFetching={isFetching}
+        onRetry={refetch}
+      />
     );
   }
 

@@ -2,12 +2,13 @@ import { Grid, Stack } from '@chakra-ui/react';
 
 import { usePipelineDetails } from '../model/use-pipeline-details';
 
-import { PipelineDetailsError } from './pipeline-details-error';
 import { PipelineDetailsHeader } from './pipeline-details-header';
-import { PipelineDetailsSkeleton } from './pipeline-details-skeleton';
 import { PipelineJobsCard } from './pipeline-jobs-card';
 import { PipelineSummaryCard } from './pipeline-summary-card';
 import { RelatedDeploymentCard } from './related-deployment-card';
+
+import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
+import { SkeletonLoader } from '@/shared/ui/skeleton/skeleton-loader';
 
 type PipelineDetailsProps = {
   projectId?: string;
@@ -34,19 +35,27 @@ export const PipelineDetails = ({
     pipelineId,
   });
 
+  const isLive =
+    pipelineRun?.status === 'queued' || pipelineRun?.status === 'running';
+
   if (!projectId || !pipelineId) {
     return (
-      <PipelineDetailsError message="Pipeline route params are missing." />
+      <PageErrorState
+        title="Pipeline details"
+        message="Pipeline route params are missing."
+      />
     );
   }
 
   if (isLoading) {
-    return <PipelineDetailsSkeleton />;
+    return <SkeletonLoader />;
   }
 
   if (isError) {
     return (
-      <PipelineDetailsError
+      <PageErrorState
+        title="Pipeline details"
+        message="Failed to load pipeline details"
         error={error}
         isFetching={isFetching}
         onRetry={refresh}
@@ -61,6 +70,7 @@ export const PipelineDetails = ({
         pipelineRun={pipelineRun}
         isFetching={isFetching}
         onRefresh={refresh}
+        isLive={isLive}
       />
 
       <Grid

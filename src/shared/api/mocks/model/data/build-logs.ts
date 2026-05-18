@@ -8,7 +8,7 @@ export const buildLogs: BuildLogLine[] = [
     buildId: 'build-1',
     timestamp: minutesAgo(4),
     level: 'info',
-    jobName: 'install',
+    jobName: 'install dependencies',
     message: 'Starting dependency installation',
   },
   {
@@ -32,7 +32,7 @@ export const buildLogs: BuildLogLine[] = [
     buildId: 'build-1',
     timestamp: minutesAgo(2),
     level: 'info',
-    jobName: 'install',
+    jobName: 'install dependencies',
     message: 'npm ci completed successfully',
   },
 
@@ -698,5 +698,21 @@ export const buildLogs: BuildLogLine[] = [
     level: 'info',
     jobName: 'staging-deploy',
     message: 'Staging deployment completed successfully',
+  },
+  {
+    id: 'log-86',
+    buildId: 'build-31',
+    timestamp: secondsAgo(1),
+    level: 'info',
+    jobName: 'build',
+    message: 'Build job is waiting for unit tests to finish',
+  },
+  {
+    id: 'log-87',
+    buildId: 'build-32',
+    timestamp: secondsAgo(1),
+    level: 'info',
+    jobName: 'deploy preview',
+    message: 'Preview deployment is queued',
   },
 ];

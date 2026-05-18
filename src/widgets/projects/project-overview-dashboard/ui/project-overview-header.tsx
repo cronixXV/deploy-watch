@@ -1,8 +1,9 @@
-import { Box, Button, Heading, HStack, Text } from '@chakra-ui/react';
-import { RefreshCw } from 'lucide-react';
+import { Button } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import type { Project } from '@/shared/api/mocks/model/types/types';
+
+import { PageHeader } from '@/shared/ui/page-header/ui/page-header';
 
 type ProjectOverviewHeaderProps = {
   project?: Project;
@@ -18,33 +19,22 @@ export function ProjectOverviewHeader({
   onRefresh,
 }: ProjectOverviewHeaderProps) {
   return (
-    <HStack align="start" justify="space-between">
-      <Box>
-        <Heading size="lg">{project?.name}</Heading>
-
-        <Text color="gray.500" mt="2">
-          {project?.repository} · default branch: {project?.defaultBranch}
-        </Text>
-      </Box>
-
-      <HStack gap="2">
+    <PageHeader
+      title={project?.name}
+      subtitle={
+        project
+          ? `${project.repository} · default branch: ${project.defaultBranch}`
+          : undefined
+      }
+      isFetching={isFetching}
+      onRefresh={onRefresh}
+      actions={
         <Button colorPalette="teal" size="sm" variant="outline" asChild>
           <RouterLink to={`/projects/${projectId}/pipelines`}>
             View pipelines
           </RouterLink>
         </Button>
-
-        <Button
-          colorPalette="teal"
-          loading={isFetching}
-          size="sm"
-          variant="outline"
-          onClick={onRefresh}
-        >
-          <RefreshCw size={16} />
-          Refresh
-        </Button>
-      </HStack>
-    </HStack>
+      }
+    />
   );
 }

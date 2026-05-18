@@ -22,3 +22,5 @@ export {
   resetPipelineFilters,
   filterPipelineRunsByDateRange,
 } from './lib/pipeline-filters';
+
+export { getUserDisplayName } from './lib/pipeline-details';

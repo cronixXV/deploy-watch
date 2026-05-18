@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  Grid,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Card, Grid, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { useApprovalsQuery } from '@/entities/approval';
@@ -28,7 +20,7 @@ import {
   getRecentDeployments,
   useProjectQuery,
 } from '@/entities/project';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
 import { ProjectOverviewDashboard } from '@/widgets/projects';
 
 export function ProjectOverviewPage() {
@@ -129,34 +121,13 @@ export function ProjectOverviewPage() {
 
   if (isError) {
     return (
-      <Stack gap="4">
-        <Heading size="lg">Project overview</Heading>
-
-        <Card.Root bg="red.50" borderColor="red.200">
-          <Card.Body>
-            <Stack gap="3">
-              <Text color="red.700" fontWeight="semibold">
-                Failed to load project dashboard
-              </Text>
-
-              <Text color="red.600" fontSize="sm">
-                {getApiErrorMessage(error)}
-              </Text>
-
-              <Button
-                alignSelf="flex-start"
-                colorPalette="red"
-                loading={isFetching}
-                size="sm"
-                variant="outline"
-                onClick={handleRefresh}
-              >
-                Retry
-              </Button>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-      </Stack>
+      <PageErrorState
+        title="Project overview"
+        message="Failed to load project dashboard"
+        error={error}
+        isFetching={isFetching}
+        onRetry={handleRefresh}
+      />
     );
   }
 

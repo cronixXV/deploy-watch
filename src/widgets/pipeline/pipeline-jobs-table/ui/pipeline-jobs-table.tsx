@@ -75,7 +75,7 @@ export function PipelineJobsTable({ projectId, jobs }: PipelineJobsTableProps) {
                 <HStack justify="flex-end">
                   <Button colorPalette="teal" size="sm" variant="ghost" asChild>
                     <RouterLink to={`/projects/${projectId}/builds/${job.id}`}>
-                      Open logs
+                      Logs
                       <ArrowRight size={16} />
                     </RouterLink>
                   </Button>
