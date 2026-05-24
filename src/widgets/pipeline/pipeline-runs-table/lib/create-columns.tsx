@@ -5,8 +5,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { PipelineRun, User } from '@/shared/api/mocks/model/types/types';
 import type { ColumnDef } from '@tanstack/react-table';
 
-import { getPipelineStatusColor } from '@/entities/project';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type CreatePipelineRunsColumnsParams = {
   projectId: string;
@@ -29,7 +29,7 @@ export function createPipelineRunsColumns({
         const status = row.original.status;
 
         return (
-          <Badge colorPalette={getPipelineStatusColor(status)} variant="subtle">
+          <Badge colorPalette={getStatusColor(status)} variant="subtle">
             {formatStatus(status)}
           </Badge>
         );

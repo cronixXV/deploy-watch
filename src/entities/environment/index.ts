@@ -8,5 +8,3 @@ export {
   useEnvironmentQuery,
   useProjectEnvironmentsQuery,
 } from './model/api/environment-queries';
-
-export { EnvironmentStatusBadge } from './ui/environment-status-badge';

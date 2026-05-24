@@ -18,17 +18,13 @@ import { useProjectDeploymentsQuery } from '@/entities/deployment';
 import { useProjectEnvironmentsQuery } from '@/entities/environment';
 import { useProjectPipelineRunsQuery } from '@/entities/pipeline';
 import {
-  getDeploymentStatusColor,
   getFailedBuildsCount,
-  getHealthColor,
-  getHealthDescription,
-  getHealthLabel,
   getLastDeployment,
   getLastPipeline,
-  getPipelineStatusColor,
   getProjectHealth,
 } from '@/entities/project';
 import { formatStatus, formatDate } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type ProjectSummaryCardProps = {
   project: Project;
@@ -103,13 +99,13 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
               <Box
                 rounded="lg"
                 borderWidth="1px"
-                borderColor={`${getHealthColor(projectHealth)}.200`}
-                bg={`${getHealthColor(projectHealth)}.50`}
+                borderColor={`${getStatusColor(projectHealth)}.200`}
+                bg={`${getStatusColor(projectHealth)}.50`}
                 p="4"
               >
                 <HStack justify="space-between" mb="1">
                   <Text
-                    color={`${getHealthColor(projectHealth)}.700`}
+                    color={`${getStatusColor(projectHealth)}.700`}
                     fontSize="sm"
                     fontWeight="semibold"
                   >
@@ -117,18 +113,18 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
                   </Text>
 
                   <Badge
-                    colorPalette={getHealthColor(projectHealth)}
+                    colorPalette={getStatusColor(projectHealth)}
                     variant="solid"
                   >
-                    {getHealthLabel(projectHealth)}
+                    {getStatusColor(projectHealth)}
                   </Badge>
                 </HStack>
 
                 <Text
-                  color={`${getHealthColor(projectHealth)}.700`}
+                  color={`${getStatusColor(projectHealth)}.700`}
                   fontSize="xs"
                 >
-                  {getHealthDescription(projectHealth)}
+                  {getStatusColor(projectHealth)}
                 </Text>
               </Box>
 
@@ -139,7 +135,7 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
                   </Text>
 
                   <Badge
-                    colorPalette={getPipelineStatusColor(lastPipeline?.status)}
+                    colorPalette={getStatusColor(lastPipeline?.status)}
                     variant="subtle"
                   >
                     {formatStatus(lastPipeline?.status)}
@@ -153,9 +149,7 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
 
                   <HStack gap="2">
                     <Badge
-                      colorPalette={getDeploymentStatusColor(
-                        lastDeployment?.status,
-                      )}
+                      colorPalette={getStatusColor(lastDeployment?.status)}
                       variant="subtle"
                     >
                       {formatStatus(lastDeployment?.status)}

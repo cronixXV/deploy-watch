@@ -11,5 +11,3 @@ export {
   useApproveApprovalMutation,
   useRejectApprovalMutation,
 } from './model/api/approval-queries';
-
-export { ApprovalStatusBadge } from './ui/approval-status-badge';

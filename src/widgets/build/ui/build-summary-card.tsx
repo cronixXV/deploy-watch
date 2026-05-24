@@ -3,11 +3,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import type { Build, PipelineRun } from '@/shared/api/mocks/model/types/types';
 
-import {
-  getBuildStatusColor,
-  getPipelineStatusColor,
-} from '@/entities/project';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type BuildSummaryCardProps = {
   projectId: string;
@@ -42,7 +39,7 @@ export const BuildSummaryCard = ({
 
             {build?.status ? (
               <Badge
-                colorPalette={getBuildStatusColor(build.status)}
+                colorPalette={getStatusColor(build.status)}
                 variant="subtle"
               >
                 {formatStatus(build.status)}
@@ -91,7 +88,7 @@ export const BuildSummaryCard = ({
 
             {pipelineRun?.status ? (
               <Badge
-                colorPalette={getPipelineStatusColor(pipelineRun.status)}
+                colorPalette={getStatusColor(pipelineRun.status)}
                 variant="subtle"
               >
                 {formatStatus(pipelineRun.status)}

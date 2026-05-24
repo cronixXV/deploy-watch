@@ -10,7 +10,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { BuildStatusByDayChartItem } from '@/entities/project';
+import type { BuildStatusByDayChartItem } from '@/entities/build';
 
 type BuildStatusByDayChartProps = {
   data: BuildStatusByDayChartItem[];

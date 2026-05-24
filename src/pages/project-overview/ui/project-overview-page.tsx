@@ -2,14 +2,16 @@ import { Card, Grid, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { useApprovalsQuery } from '@/entities/approval';
-import { useProjectBuildsQuery } from '@/entities/build';
+import {
+  getBuildStatusByDayChartData,
+  useProjectBuildsQuery,
+} from '@/entities/build';
+import { getAverageBuildDurationByDayChartData } from '@/entities/build';
 import { useProjectDeploymentsQuery } from '@/entities/deployment';
 import { useProjectEnvironmentsQuery } from '@/entities/environment';
 import { useProjectPipelineRunsQuery } from '@/entities/pipeline';
 import {
   getAverageBuildDuration,
-  getAverageBuildDurationByDayChartData,
-  getBuildStatusByDayChartData,
   getBuildSuccessRate,
   getDeployFrequencyChartData,
   getDeploymentActivityByEnvironmentChartData,

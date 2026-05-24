@@ -2,8 +2,9 @@ import { Badge, Box, Card, HStack, Stack, Text } from '@chakra-ui/react';
 
 import { getActivityIcon, getStatusIcon } from '../lib/helpers';
 
-import { getStatusColor, type RecentActivityItem } from '@/entities/project';
+import { type RecentActivityItem } from '@/entities/project';
 import { formatDate, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type RecentActivityWidgetProps = {
   items: RecentActivityItem[];

@@ -2,8 +2,8 @@ import { Badge, Box, Card, DataList, Text } from '@chakra-ui/react';
 
 import type { PipelineRun } from '@/shared/api/mocks/model/types/types';
 
-import { getPipelineStatusColor } from '@/entities/project';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type PipelineSummaryCardProps = {
   pipelineRun?: PipelineRun;
@@ -41,7 +41,7 @@ export const PipelineSummaryCard = ({
           <DataList.ItemValue>
             {pipelineRun?.status && (
               <Badge
-                colorPalette={getPipelineStatusColor(pipelineRun.status)}
+                colorPalette={getStatusColor(pipelineRun.status)}
                 variant="subtle"
               >
                 {formatStatus(pipelineRun.status)}

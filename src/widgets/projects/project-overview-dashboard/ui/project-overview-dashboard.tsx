@@ -11,6 +11,8 @@ import { RecentDeploymentsCard } from './recent-deployments-card';
 import type {
   AverageBuildDurationChartItem,
   BuildStatusByDayChartItem,
+} from '@/entities/build';
+import type {
   DeploymentActivityByEnvironmentChartItem,
   DeployFrequencyChartItem,
   PipelineStatusDistributionChartItem,

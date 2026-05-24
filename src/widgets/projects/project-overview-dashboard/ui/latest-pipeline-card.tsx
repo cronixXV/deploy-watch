@@ -12,8 +12,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import type { PipelineRun } from '@/shared/api/mocks/model/types/types';
 
-import { getPipelineStatusColor } from '@/entities/project';
 import { formatDate, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type LatestPipelineCardProps = {
   projectId: string;
@@ -45,7 +45,7 @@ export const LatestPipelineCard = ({
             </Box>
 
             <Badge
-              colorPalette={getPipelineStatusColor(pipeline?.status)}
+              colorPalette={getStatusColor(pipeline?.status)}
               variant="subtle"
             >
               {formatStatus(pipeline?.status)}

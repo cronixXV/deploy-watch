@@ -11,6 +11,13 @@ export {
   useProjectBuildsQuery,
 } from './model/api/build-queries';
 
-export { BuildStatusBadge } from './ui/build-status-badge';
+export type {
+  LogLevelFilter,
+  BuildStatusByDayChartItem,
+  AverageBuildDurationChartItem,
+} from './model/types/types';
 
-export type { LogLevelFilter } from './model/types/types';
+export {
+  getBuildStatusByDayChartData,
+  getAverageBuildDurationByDayChartData,
+} from './lib/helpers';

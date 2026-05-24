@@ -2,8 +2,8 @@ import { Badge, Card, HStack, Stack, Text } from '@chakra-ui/react';
 
 import type { Environment } from '@/shared/api/mocks/model/types/types';
 
-import { getEnvironmentStatusColor } from '@/entities/project';
 import { formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type EnvironmentHealthCardProps = {
   environments: Environment[];
@@ -36,7 +36,7 @@ export const EnvironmentHealthCard = ({
                 <Text fontSize="sm">{environment.name}</Text>
 
                 <Badge
-                  colorPalette={getEnvironmentStatusColor(environment.status)}
+                  colorPalette={getStatusColor(environment.status)}
                   variant="subtle"
                 >
                   {formatStatus(environment.status)}

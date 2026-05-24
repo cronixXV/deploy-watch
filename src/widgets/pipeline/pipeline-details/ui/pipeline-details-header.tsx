@@ -1,7 +1,7 @@
 import type { PipelineRun } from '@/shared/api/mocks/model/types/types';
 
-import { getPipelineStatusColor } from '@/entities/project';
 import { formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 import { PageHeader } from '@/shared/ui/page-header/ui/page-header';
 
 type PipelineDetailsHeaderProps = {
@@ -31,7 +31,7 @@ export function PipelineDetailsHeader({
         pipelineRun?.status
           ? {
               label: formatStatus(pipelineRun.status),
-              colorPalette: getPipelineStatusColor(pipelineRun.status),
+              colorPalette: getStatusColor(pipelineRun.status),
             }
           : undefined
       }

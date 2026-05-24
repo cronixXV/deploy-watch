@@ -3,6 +3,8 @@ import { Grid } from '@chakra-ui/react';
 import type {
   AverageBuildDurationChartItem,
   BuildStatusByDayChartItem,
+} from '@/entities/build';
+import type {
   DeployFrequencyChartItem,
   DeploymentActivityByEnvironmentChartItem,
   PipelineStatusDistributionChartItem,

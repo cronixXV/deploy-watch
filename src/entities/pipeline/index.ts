@@ -13,8 +13,6 @@ export {
   useProjectPipelineRunsMetaQuery,
 } from './model/api/pipeline-queries';
 
-export { PipelineStatusBadge } from './ui/pipeline-status-badge';
-
 export {
   type PipelineFilters,
   setSearchParamValue,

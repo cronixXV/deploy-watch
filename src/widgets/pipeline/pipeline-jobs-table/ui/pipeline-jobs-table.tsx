@@ -4,8 +4,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import type { Build } from '@/shared/api/mocks/model/types/types';
 
-import { getBuildStatusColor } from '@/entities/project';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type PipelineJobsTableProps = {
   projectId: string;
@@ -39,7 +39,7 @@ export function PipelineJobsTable({ projectId, jobs }: PipelineJobsTableProps) {
             <Table.Row key={job.id}>
               <Table.Cell>
                 <Badge
-                  colorPalette={getBuildStatusColor(job.status)}
+                  colorPalette={getStatusColor(job.status)}
                   variant="subtle"
                 >
                   {formatStatus(job.status)}

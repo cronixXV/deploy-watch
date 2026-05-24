@@ -9,7 +9,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { AverageBuildDurationChartItem } from '@/entities/project';
+import type { AverageBuildDurationChartItem } from '@/entities/build';
 
 import { formatDuration } from '@/shared/lib/format';
 

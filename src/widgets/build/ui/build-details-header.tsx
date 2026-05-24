@@ -1,7 +1,7 @@
 import type { Build } from '@/shared/api/mocks/model/types/types';
 
-import { getBuildStatusColor } from '@/entities/project';
 import { formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 import { PageHeader } from '@/shared/ui/page-header/ui/page-header';
 
 type BuildDetailsHeaderProps = {
@@ -12,13 +12,13 @@ type BuildDetailsHeaderProps = {
   onRefresh: () => void;
 };
 
-export function BuildDetailsHeader({
+export const BuildDetailsHeader = ({
   projectId,
   build,
   isFetching,
   isLive,
   onRefresh,
-}: BuildDetailsHeaderProps) {
+}: BuildDetailsHeaderProps) => {
   return (
     <PageHeader
       title={`Build ${build?.id ?? ''}`}
@@ -27,7 +27,7 @@ export function BuildDetailsHeader({
         build?.status
           ? {
               label: formatStatus(build.status),
-              colorPalette: getBuildStatusColor(build.status),
+              colorPalette: getStatusColor(build.status),
             }
           : undefined
       }
@@ -41,4 +41,4 @@ export function BuildDetailsHeader({
       onRefresh={onRefresh}
     />
   );
-}
+};

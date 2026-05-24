@@ -25,10 +25,10 @@ import { levelOptions } from '../model/create-options';
 import type { BuildLogLine } from '@/shared/api/mocks/model/types/types';
 
 import { useBuildLogsQuery, type LogLevelFilter } from '@/entities/build';
-import { getLogLevelColor } from '@/entities/project';
 import { getApiErrorMessage } from '@/shared/api/client/client';
 import { useDebounce } from '@/shared/lib/debounced';
 import { formatLogTimestamp } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type BuildLogsViewerProps = {
   buildId: string;
@@ -399,7 +399,7 @@ export const BuildLogsViewer = ({ buildId }: BuildLogsViewerProps) => {
                     </Text>
 
                     <Badge
-                      colorPalette={getLogLevelColor(log.level)}
+                      colorPalette={getStatusColor(log.level)}
                       minW="72px"
                       justifyContent="center"
                       variant="subtle"

@@ -11,8 +11,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import type { Deployment } from '@/shared/api/mocks/model/types/types';
 
-import { getDeploymentStatusColor } from '@/entities/project';
 import { formatDate, formatStatus } from '@/shared/lib/format';
+import { getStatusColor } from '@/shared/lib/get-color';
 
 type RecentDeploymentsCardProps = {
   projectId: string;
@@ -66,7 +66,7 @@ export const RecentDeploymentsCard = ({
                 </Box>
 
                 <Badge
-                  colorPalette={getDeploymentStatusColor(deployment.status)}
+                  colorPalette={getStatusColor(deployment.status)}
                   variant="subtle"
                 >
                   {formatStatus(deployment.status)}
