@@ -2,7 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  Card,
   HStack,
   Skeleton,
   Stack,
@@ -23,11 +22,46 @@ import {
   getLastPipeline,
   getProjectHealth,
 } from '@/entities/project';
-import { formatStatus, formatDate } from '@/shared/lib/format';
+import { formatDate } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
+import { DefaultCard } from '@/shared/ui/default-card/ui/default-card';
+import { InfoRow } from '@/shared/ui/info-row/ui/info-row';
+import { StatusBadge } from '@/shared/ui/status-badge/ui/status-badge';
 
 type ProjectSummaryCardProps = {
   project: Project;
+};
+
+type ProjectHealthBlockProps = {
+  health: string;
+};
+
+const ProjectHealthBlock = ({ health }: ProjectHealthBlockProps) => {
+  const color = getStatusColor(health);
+
+  return (
+    <Box
+      rounded="lg"
+      borderWidth="1px"
+      borderColor={`${color}.200`}
+      bg={`${color}.50`}
+      p="4"
+    >
+      <HStack justify="space-between" mb="1">
+        <Text color={`${color}.700`} fontSize="sm" fontWeight="semibold">
+          Project health
+        </Text>
+
+        <Badge colorPalette={color} variant="solid">
+          {health}
+        </Badge>
+      </HStack>
+
+      <Text color={`${color}.700`} fontSize="xs">
+        {health}
+      </Text>
+    </Box>
+  );
 };
 
 export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
@@ -63,140 +97,82 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
     environmentsQuery.isLoading ||
     failedBuildsQuery.isLoading;
 
+  const environmentsCount = environmentsQuery.data?.length ?? 0;
+
   return (
-    <Card.Root
-      bg="white"
+    <DefaultCard
       borderColor={projectHealth === 'critical' ? 'red.200' : 'gray.200'}
-      shadow="sm"
     >
-      <Card.Body>
-        <Stack gap="5">
-          <HStack align="start" justify="space-between">
-            <Box>
-              <Text fontSize="lg" fontWeight="semibold">
-                {project.name}
-              </Text>
+      <Stack gap="5">
+        <HStack align="start" justify="space-between">
+          <Box>
+            <Text fontSize="lg" fontWeight="semibold">
+              {project.name}
+            </Text>
 
-              <Text color="gray.500" fontSize="sm">
-                {project.repository}
-              </Text>
-            </Box>
+            <Text color="gray.500" fontSize="sm">
+              {project.repository}
+            </Text>
+          </Box>
 
-            <Badge colorPalette="gray" variant="subtle">
-              {project.defaultBranch}
-            </Badge>
-          </HStack>
+          <Badge colorPalette="gray" variant="subtle">
+            {project.defaultBranch}
+          </Badge>
+        </HStack>
 
-          {isSummaryLoading ? (
+        {isSummaryLoading ? (
+          <Stack gap="3">
+            <Skeleton h="18px" />
+            <Skeleton h="18px" />
+            <Skeleton h="18px" />
+            <Skeleton h="18px" />
+          </Stack>
+        ) : (
+          <Stack gap="4">
+            <ProjectHealthBlock health={projectHealth} />
+
             <Stack gap="3">
-              <Skeleton h="18px" />
-              <Skeleton h="18px" />
-              <Skeleton h="18px" />
-              <Skeleton h="18px" />
-            </Stack>
-          ) : (
-            <Stack gap="4">
-              <Box
-                rounded="lg"
-                borderWidth="1px"
-                borderColor={`${getStatusColor(projectHealth)}.200`}
-                bg={`${getStatusColor(projectHealth)}.50`}
-                p="4"
-              >
-                <HStack justify="space-between" mb="1">
-                  <Text
-                    color={`${getStatusColor(projectHealth)}.700`}
-                    fontSize="sm"
-                    fontWeight="semibold"
-                  >
-                    Project health
+              <InfoRow label="Last pipeline">
+                <StatusBadge status={lastPipeline?.status} />
+              </InfoRow>
+
+              <InfoRow label="Last deployment">
+                <HStack gap="2">
+                  <StatusBadge status={lastDeployment?.status} />
+
+                  <Text color="gray.500" fontSize="xs">
+                    {formatDate(lastDeployment?.startedAt)}
                   </Text>
-
-                  <Badge
-                    colorPalette={getStatusColor(projectHealth)}
-                    variant="solid"
-                  >
-                    {getStatusColor(projectHealth)}
-                  </Badge>
                 </HStack>
+              </InfoRow>
 
-                <Text
-                  color={`${getStatusColor(projectHealth)}.700`}
-                  fontSize="xs"
-                >
-                  {getStatusColor(projectHealth)}
+              <InfoRow label="Environments">
+                <Text fontSize="sm" fontWeight="medium">
+                  {environmentsCount}
                 </Text>
-              </Box>
+              </InfoRow>
 
-              <Stack gap="3">
-                <HStack justify="space-between">
-                  <Text color="gray.500" fontSize="sm">
-                    Last pipeline
-                  </Text>
-
-                  <Badge
-                    colorPalette={getStatusColor(lastPipeline?.status)}
-                    variant="subtle"
-                  >
-                    {formatStatus(lastPipeline?.status)}
-                  </Badge>
-                </HStack>
-
-                <HStack justify="space-between">
-                  <Text color="gray.500" fontSize="sm">
-                    Last deployment
-                  </Text>
-
-                  <HStack gap="2">
-                    <Badge
-                      colorPalette={getStatusColor(lastDeployment?.status)}
-                      variant="subtle"
-                    >
-                      {formatStatus(lastDeployment?.status)}
-                    </Badge>
-
-                    <Text color="gray.500" fontSize="xs">
-                      {formatDate(lastDeployment?.startedAt)}
-                    </Text>
-                  </HStack>
-                </HStack>
-
-                <HStack justify="space-between">
-                  <Text color="gray.500" fontSize="sm">
-                    Environments
-                  </Text>
-
-                  <Text fontSize="sm" fontWeight="medium">
-                    {environmentsQuery.data?.length ?? 0}
-                  </Text>
-                </HStack>
-
-                <HStack justify="space-between">
-                  <Text color="gray.500" fontSize="sm">
-                    Failed builds
-                  </Text>
-
-                  <Badge
-                    colorPalette={failedBuildsCount > 0 ? 'red' : 'green'}
-                    variant="subtle"
-                  >
-                    {failedBuildsCount}
-                  </Badge>
-                </HStack>
-              </Stack>
+              <InfoRow label="Failed builds">
+                <Badge
+                  colorPalette={failedBuildsCount > 0 ? 'red' : 'green'}
+                  variant="subtle"
+                >
+                  {failedBuildsCount}
+                </Badge>
+              </InfoRow>
             </Stack>
-          )}
+          </Stack>
+        )}
 
-          <HStack justify="flex-end">
-            <Button colorPalette="teal" size="sm" variant="ghost" asChild>
-              <RouterLink to={`/projects/${project.id}`}>
-                Open project
-                <ArrowRight size={16} />
-              </RouterLink>
-            </Button>
-          </HStack>
-        </Stack>
-      </Card.Body>
-    </Card.Root>
+        <HStack justify="flex-end">
+          <Button colorPalette="teal" size="sm" variant="ghost" asChild>
+            <RouterLink to={`/projects/${project.id}`}>
+              Open project
+              <ArrowRight size={16} />
+            </RouterLink>
+          </Button>
+        </HStack>
+      </Stack>
+    </DefaultCard>
   );
 };

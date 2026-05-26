@@ -82,10 +82,10 @@ export function usePipelineRunBuildsQuery(pipelineRunId: string) {
     },
   });
 }
-export function useProjectPipelineRunsMetaQuery(projectId: string) {
+export function useProjectPipelineRunsMetaQuery(projectId?: string) {
   return useQuery({
-    queryKey: pipelineQueries.meta(projectId),
-    queryFn: () => getProjectPipelineRunsMeta(projectId),
+    queryKey: pipelineQueries.meta(projectId ?? ''),
+    queryFn: () => getProjectPipelineRunsMeta(projectId!),
     enabled: Boolean(projectId),
   });
 }

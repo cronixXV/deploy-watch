@@ -5,6 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { PipelineRun, User } from '@/shared/api/mocks/model/types/types';
 import type { ColumnDef } from '@tanstack/react-table';
 
+import { getUserNameById } from '@/entities/environment';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
 
@@ -12,10 +13,6 @@ type CreatePipelineRunsColumnsParams = {
   projectId: string;
   users: User[];
 };
-
-function getUserNameById(users: User[], userId: string) {
-  return users.find((user) => user.id === userId)?.name ?? userId;
-}
 
 export function createPipelineRunsColumns({
   projectId,

@@ -1,9 +1,14 @@
-import { Badge, Box, Card, DataList, Text } from '@chakra-ui/react';
+import { Badge, Box, Text } from '@chakra-ui/react';
 
 import type { PipelineRun } from '@/shared/api/mocks/model/types/types';
 
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
-import { getStatusColor } from '@/shared/lib/get-color';
+import { DefaultCard } from '@/shared/ui/default-card/ui/default-card';
+import { StatusBadge } from '@/shared/ui/status-badge/ui/status-badge';
+import {
+  SummaryGrid,
+  SummaryGridItem,
+} from '@/shared/ui/summary-grid/ui/summary-grid';
 
 type PipelineSummaryCardProps = {
   pipelineRun?: PipelineRun;
@@ -16,105 +21,56 @@ export const PipelineSummaryCard = ({
   authorName,
   triggeredByName,
 }: PipelineSummaryCardProps) => (
-  <Card.Root bg="white" borderColor="gray.200" shadow="sm">
-    <Card.Header>
-      <Box>
-        <Text fontWeight="semibold">Pipeline summary</Text>
-        <Text color="gray.500" fontSize="sm">
-          Commit, author and runtime information.
-        </Text>
-      </Box>
-    </Card.Header>
+  <DefaultCard
+    title="Pipeline summary"
+    description="Commit, author and runtime information."
+  >
+    <SummaryGrid>
+      <SummaryGridItem label="Status">
+        <StatusBadge status={pipelineRun?.status} />
+      </SummaryGridItem>
 
-    <Card.Body>
-      <DataList.Root
-        orientation="vertical"
-        gap="4"
-        display="grid"
-        gridTemplateColumns={{
-          base: '1fr',
-          md: 'repeat(2, minmax(0, 1fr))',
-        }}
-      >
-        <DataList.Item>
-          <DataList.ItemLabel>Status</DataList.ItemLabel>
-          <DataList.ItemValue>
-            {pipelineRun?.status && (
-              <Badge
-                colorPalette={getStatusColor(pipelineRun.status)}
-                variant="subtle"
-              >
-                {formatStatus(pipelineRun.status)}
-              </Badge>
-            )}
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Environment">
+        <Text>{formatStatus(pipelineRun?.environment)}</Text>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Environment</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{formatStatus(pipelineRun?.environment)}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Branch">
+        <Badge colorPalette="gray" variant="outline">
+          {pipelineRun?.branch ?? '—'}
+        </Badge>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Branch</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Badge colorPalette="gray" variant="outline">
-              {pipelineRun?.branch}
-            </Badge>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Commit">
+        <Box>
+          <Text fontFamily="mono" fontSize="sm">
+            {pipelineRun?.commitHash ?? '—'}
+          </Text>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Commit</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Box>
-              <Text fontFamily="mono" fontSize="sm">
-                {pipelineRun?.commitHash}
-              </Text>
-              <Text color="gray.500" fontSize="sm">
-                {pipelineRun?.commitMessage}
-              </Text>
-            </Box>
-          </DataList.ItemValue>
-        </DataList.Item>
+          <Text color="gray.500" fontSize="sm">
+            {pipelineRun?.commitMessage ?? '—'}
+          </Text>
+        </Box>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Author</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{authorName}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Author">
+        <Text>{authorName}</Text>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Triggered by</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{triggeredByName}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Triggered by">
+        <Text>{triggeredByName}</Text>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Started at</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{formatDate(pipelineRun?.startedAt)}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Started at">
+        <Text>{formatDate(pipelineRun?.startedAt)}</Text>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Finished at</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{formatDate(pipelineRun?.finishedAt)}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
+      <SummaryGridItem label="Finished at">
+        <Text>{formatDate(pipelineRun?.finishedAt)}</Text>
+      </SummaryGridItem>
 
-        <DataList.Item>
-          <DataList.ItemLabel>Duration</DataList.ItemLabel>
-          <DataList.ItemValue>
-            <Text>{formatDuration(pipelineRun?.durationSec)}</Text>
-          </DataList.ItemValue>
-        </DataList.Item>
-      </DataList.Root>
-    </Card.Body>
-  </Card.Root>
+      <SummaryGridItem label="Duration">
+        <Text>{formatDuration(pipelineRun?.durationSec)}</Text>
+      </SummaryGridItem>
+    </SummaryGrid>
+  </DefaultCard>
 );

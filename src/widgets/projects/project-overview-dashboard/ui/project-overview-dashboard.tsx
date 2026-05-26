@@ -115,6 +115,7 @@ export const ProjectOverviewDashboard = ({
         <EnvironmentHealthCard
           environments={environments}
           healthyCount={healthyEnvironmentsCount}
+          projectId={projectId}
         />
 
         <RecentActivityWidget items={recentActivityItems} />

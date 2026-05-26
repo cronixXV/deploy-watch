@@ -1,6 +1,5 @@
-import { Card, Stack, Text } from '@chakra-ui/react';
-
 import { formatDuration } from '@/shared/lib/format';
+import { MetricCard } from '@/shared/ui/metric-card/ui/metric-card';
 
 type BuildMetricsCardsProps = {
   successRate: number;
@@ -10,44 +9,18 @@ type BuildMetricsCardsProps = {
 export const BuildMetricsCards = ({
   successRate,
   averageBuildDuration,
-}: BuildMetricsCardsProps) => {
-  return (
-    <>
-      <Card.Root bg="white" borderColor="gray.200" shadow="sm">
-        <Card.Body>
-          <Stack gap="2">
-            <Text color="gray.500" fontSize="sm" fontWeight="medium">
-              Build success rate
-            </Text>
+}: BuildMetricsCardsProps) => (
+  <>
+    <MetricCard
+      label="Build success rate"
+      value={`${successRate}%`}
+      description="Based on completed builds"
+    />
 
-            <Text fontSize="3xl" fontWeight="bold">
-              {successRate}%
-            </Text>
-
-            <Text color="gray.500" fontSize="sm">
-              Based on completed builds
-            </Text>
-          </Stack>
-        </Card.Body>
-      </Card.Root>
-
-      <Card.Root bg="white" borderColor="gray.200" shadow="sm">
-        <Card.Body>
-          <Stack gap="2">
-            <Text color="gray.500" fontSize="sm" fontWeight="medium">
-              Average build duration
-            </Text>
-
-            <Text fontSize="3xl" fontWeight="bold">
-              {formatDuration(averageBuildDuration)}
-            </Text>
-
-            <Text color="gray.500" fontSize="sm">
-              Across builds with recorded duration
-            </Text>
-          </Stack>
-        </Card.Body>
-      </Card.Root>
-    </>
-  );
-};
+    <MetricCard
+      label="Average build duration"
+      value={formatDuration(averageBuildDuration)}
+      description="Across builds with recorded duration"
+    />
+  </>
+);

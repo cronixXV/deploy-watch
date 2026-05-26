@@ -1,8 +1,9 @@
+import { useParams } from 'react-router-dom';
+
+import { Environments } from '@/widgets/environment';
+
 export const EnvironmentsPage = () => {
-  return (
-    <main>
-      <h1>Environments</h1>
-      <p>Environment dashboard will be here</p>
-    </main>
-  );
+  const { projectId } = useParams();
+
+  return <Environments projectId={projectId} />;
 };

@@ -24,9 +24,10 @@ import {
 import { useMemo, useState } from 'react';
 
 import { createPipelineRunsColumns } from '../lib/create-columns';
-import { getSortIcon } from '../lib/get-sort-icon';
 
 import type { PipelineRun, User } from '@/shared/api/mocks/model/types/types';
+
+import { getSortIcon } from '@/shared/lib/get-sort-icon';
 
 type PipelineRunsTableProps = {
   projectId: string;

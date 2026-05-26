@@ -10,3 +10,10 @@ export {
   useProjectDeploymentsQuery,
   useRollbackDeploymentMutation,
 } from './model/api/deployment-queries';
+
+export { getDeploymentTimelineSteps } from './lib/deployment-helpers';
+
+export type {
+  DeploymentTimelineStep,
+  DeploymentTimelineStepStatus,
+} from './lib/deployment-helpers';

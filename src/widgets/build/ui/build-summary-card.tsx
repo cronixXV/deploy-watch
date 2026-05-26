@@ -1,10 +1,12 @@
-import { Badge, Box, Card, HStack, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Stack, Text } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import type { Build, PipelineRun } from '@/shared/api/mocks/model/types/types';
 
-import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
-import { getStatusColor } from '@/shared/lib/get-color';
+import { formatDate, formatDuration } from '@/shared/lib/format';
+import { DefaultCard } from '@/shared/ui/default-card/ui/default-card';
+import { InfoRow } from '@/shared/ui/info-row/ui/info-row';
+import { StatusBadge } from '@/shared/ui/status-badge/ui/status-badge';
 
 type BuildSummaryCardProps = {
   projectId: string;
@@ -19,154 +21,92 @@ export const BuildSummaryCard = ({
   pipelineRun,
   authorName,
 }: BuildSummaryCardProps) => {
+  const fallbackValue = '—';
+
   return (
-    <Card.Root bg="white" borderColor="gray.200" shadow="sm">
-      <Card.Header>
-        <Box>
-          <Text fontWeight="semibold">Build metadata</Text>
-          <Text color="gray.500" fontSize="sm">
-            Job, pipeline and commit information.
+    <DefaultCard
+      title="Build metadata"
+      description="Job, pipeline and commit information."
+    >
+      <Stack gap="3">
+        <InfoRow label="Status">
+          <StatusBadge status={build?.status} />
+        </InfoRow>
+
+        <InfoRow label="Job">
+          <Text fontSize="sm" fontWeight="medium">
+            {build?.jobName ?? fallbackValue}
           </Text>
-        </Box>
-      </Card.Header>
+        </InfoRow>
 
-      <Card.Body>
-        <Stack gap="3">
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Status
-            </Text>
-
-            {build?.status ? (
-              <Badge
-                colorPalette={getStatusColor(build.status)}
-                variant="subtle"
+        <InfoRow label="Pipeline">
+          {pipelineRun ? (
+            <Text color="teal.600" fontSize="sm" fontWeight="medium" asChild>
+              <RouterLink
+                to={`/projects/${projectId}/pipelines/${pipelineRun.id}`}
               >
-                {formatStatus(build.status)}
-              </Badge>
-            ) : (
-              <Text color="gray.500" fontSize="sm">
-                —
-              </Text>
-            )}
-          </HStack>
-
-          <HStack justify="space-between">
+                {pipelineRun.id}
+              </RouterLink>
+            </Text>
+          ) : (
             <Text color="gray.500" fontSize="sm">
-              Job
+              {fallbackValue}
             </Text>
+          )}
+        </InfoRow>
 
-            <Text fontSize="sm" fontWeight="medium">
-              {build?.jobName ?? '—'}
-            </Text>
-          </HStack>
+        <InfoRow label="Pipeline status">
+          <StatusBadge status={pipelineRun?.status} />
+        </InfoRow>
 
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Pipeline
-            </Text>
-
-            {pipelineRun ? (
-              <Text color="teal.600" fontSize="sm" fontWeight="medium" asChild>
-                <RouterLink
-                  to={`/projects/${projectId}/pipelines/${pipelineRun.id}`}
-                >
-                  {pipelineRun.id}
-                </RouterLink>
-              </Text>
-            ) : (
-              <Text color="gray.500" fontSize="sm">
-                —
-              </Text>
-            )}
-          </HStack>
-
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Pipeline status
-            </Text>
-
-            {pipelineRun?.status ? (
-              <Badge
-                colorPalette={getStatusColor(pipelineRun.status)}
-                variant="subtle"
-              >
-                {formatStatus(pipelineRun.status)}
-              </Badge>
-            ) : (
-              <Text color="gray.500" fontSize="sm">
-                —
-              </Text>
-            )}
-          </HStack>
-
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Branch
-            </Text>
-
+        <InfoRow label="Branch">
+          {pipelineRun?.branch ? (
             <Badge colorPalette="gray" variant="outline">
-              {pipelineRun?.branch ?? '—'}
+              {pipelineRun.branch}
             </Badge>
-          </HStack>
-
-          <HStack align="start" justify="space-between">
+          ) : (
             <Text color="gray.500" fontSize="sm">
-              Commit
+              {fallbackValue}
+            </Text>
+          )}
+        </InfoRow>
+
+        <InfoRow label="Commit" align="start">
+          <Box textAlign="right">
+            <Text fontFamily="mono" fontSize="sm">
+              {pipelineRun?.commitHash ?? fallbackValue}
             </Text>
 
-            <Box textAlign="right">
-              <Text fontFamily="mono" fontSize="sm">
-                {pipelineRun?.commitHash ?? '—'}
-              </Text>
-
-              <Text color="gray.500" fontSize="sm">
-                {pipelineRun?.commitMessage ?? '—'}
-              </Text>
-            </Box>
-          </HStack>
-
-          <HStack justify="space-between">
             <Text color="gray.500" fontSize="sm">
-              Author
+              {pipelineRun?.commitMessage ?? fallbackValue}
             </Text>
+          </Box>
+        </InfoRow>
 
-            <Text fontSize="sm" fontWeight="medium">
-              {authorName}
-            </Text>
-          </HStack>
+        <InfoRow label="Author">
+          <Text fontSize="sm" fontWeight="medium">
+            {authorName || fallbackValue}
+          </Text>
+        </InfoRow>
 
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Started at
-            </Text>
+        <InfoRow label="Started at">
+          <Text fontSize="sm" fontWeight="medium">
+            {formatDate(build?.startedAt)}
+          </Text>
+        </InfoRow>
 
-            <Text fontSize="sm" fontWeight="medium">
-              {formatDate(build?.startedAt)}
-            </Text>
-          </HStack>
+        <InfoRow label="Finished at">
+          <Text fontSize="sm" fontWeight="medium">
+            {formatDate(build?.finishedAt)}
+          </Text>
+        </InfoRow>
 
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Finished at
-            </Text>
-
-            <Text fontSize="sm" fontWeight="medium">
-              {formatDate(build?.finishedAt)}
-            </Text>
-          </HStack>
-
-          <HStack justify="space-between">
-            <Text color="gray.500" fontSize="sm">
-              Duration
-            </Text>
-
-            <Text fontSize="sm" fontWeight="medium">
-              {formatDuration(build?.durationSec)}
-            </Text>
-          </HStack>
-        </Stack>
-      </Card.Body>
-    </Card.Root>
+        <InfoRow label="Duration">
+          <Text fontSize="sm" fontWeight="medium">
+            {formatDuration(build?.durationSec)}
+          </Text>
+        </InfoRow>
+      </Stack>
+    </DefaultCard>
   );
 };

@@ -31,18 +31,18 @@ function shouldPollDeployment(deployment?: Deployment) {
 export function useProjectDeploymentsQuery(
   params: GetProjectDeploymentsParams,
 ) {
-  return useQuery({
+  return useQuery<Deployment[]>({
     queryKey: deploymentQueries.list(params),
     queryFn: () => getProjectDeployments(params),
     enabled: Boolean(params.projectId),
     refetchInterval: (query) => {
-      const data = query.state.data;
+      const deployments = query.state.data;
 
-      const hasActiveDeployment = data?.some((deployment) =>
-        shouldPollDeployment(deployment),
-      );
+      if (!Array.isArray(deployments)) {
+        return false;
+      }
 
-      return hasActiveDeployment ? 3000 : false;
+      return deployments.some(shouldPollDeployment) ? 3000 : false;
     },
   });
 }

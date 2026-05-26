@@ -1,8 +1,9 @@
+import { useParams } from 'react-router-dom';
+
+import { Deployments } from '@/widgets/deployment';
+
 export const DeploymentsPage = () => {
-  return (
-    <main>
-      <h1>Deployments</h1>
-      <p>Deployment history will be here</p>
-    </main>
-  );
+  const { projectId } = useParams();
+
+  return <Deployments projectId={projectId} />;
 };

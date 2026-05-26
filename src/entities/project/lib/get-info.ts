@@ -6,27 +6,29 @@ import type {
   ProjectHealth,
 } from '@/shared/api/mocks/model/types/types';
 
+function toArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export function getLastPipeline(pipelineRuns?: PipelineRun[]) {
-  return pipelineRuns?.toSorted(
+  return toArray<PipelineRun>(pipelineRuns).toSorted(
     (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
   )[0];
 }
 
 export function getLastDeployment(deployments?: Deployment[]) {
-  return deployments?.toSorted(
+  return toArray<Deployment>(deployments).toSorted(
     (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
   )[0];
 }
 
 export function getRecentDeployments(deployments?: Deployment[], limit = 5) {
-  return (
-    deployments
-      ?.toSorted(
-        (a, b) =>
-          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
-      )
-      .slice(0, limit) ?? []
-  );
+  return toArray<Deployment>(deployments)
+    .toSorted(
+      (a, b) =>
+        new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
+    )
+    .slice(0, limit);
 }
 
 export function getFailedBuildsCount(builds?: Build[]) {
@@ -34,11 +36,13 @@ export function getFailedBuildsCount(builds?: Build[]) {
 }
 
 export function getBuildSuccessRate(builds?: Build[]) {
-  if (!builds?.length) {
+  const safeBuilds = toArray<Build>(builds);
+
+  if (!safeBuilds.length) {
     return 0;
   }
 
-  const completedBuilds = builds.filter((build) =>
+  const completedBuilds = safeBuilds.filter((build) =>
     ['success', 'failed', 'canceled'].includes(build.status),
   );
 

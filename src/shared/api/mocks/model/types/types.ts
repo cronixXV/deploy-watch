@@ -91,6 +91,8 @@ export type Environment = {
   currentVersion: string;
   currentCommitHash: string;
   lastDeploymentAt?: string;
+  deployedById?: string;
+  activeIncidents: number;
   locked: boolean;
 };
 
