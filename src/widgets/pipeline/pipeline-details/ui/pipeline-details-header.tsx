@@ -38,8 +38,8 @@ export function PipelineDetailsHeader({
       isLive={isLive}
       liveText="Updates every 3 seconds while pipeline is active."
       backLink={{
-        to: `/projects/${projectId}/pipelines`,
-        label: 'Back to pipelines',
+        to: `/projects/${projectId}`,
+        label: 'Back',
       }}
       isFetching={isFetching}
       onRefresh={onRefresh}
