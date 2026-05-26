@@ -90,7 +90,9 @@ export const useProjectOverview = ({ projectId }: UseProjectOverviewParams) => {
   const pipelineRuns = pipelineRunsQuery.data ?? [];
   const builds = buildsQuery.data ?? [];
   const deployments = deploymentsQuery.data ?? [];
-  const environments = environmentsQuery.data ?? [];
+  const environments = Array.isArray(environmentsQuery.data)
+    ? environmentsQuery.data
+    : [];
   const approvals = approvalsQuery.data ?? [];
 
   const latestPipeline = getLastPipeline(pipelineRuns);
@@ -122,7 +124,6 @@ export const useProjectOverview = ({ projectId }: UseProjectOverviewParams) => {
     project: projectQuery.data,
     projectId,
     environments,
-
     latestPipeline,
     recentDeployments,
     successRate,
@@ -135,12 +136,10 @@ export const useProjectOverview = ({ projectId }: UseProjectOverviewParams) => {
     deployFrequency,
     recentActivityItems,
     openApprovalsCount: approvals.length,
-
     isLoading,
     isError,
     isFetching,
     error,
-
     refresh,
   };
 };

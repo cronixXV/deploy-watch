@@ -14,11 +14,12 @@ export const environmentQueries = {
     [...environmentQueries.details(), environmentId] as const,
 };
 
-export function useProjectEnvironmentsQuery(projectId: string) {
+export function useProjectEnvironmentsQuery(projectId?: string) {
   return useQuery({
-    queryKey: environmentQueries.list(projectId),
-    queryFn: () => getProjectEnvironments(projectId),
+    queryKey: environmentQueries.list(projectId ?? ''),
+    queryFn: () => getProjectEnvironments(projectId!),
     enabled: Boolean(projectId),
+    placeholderData: [],
     refetchInterval: 5000,
   });
 }

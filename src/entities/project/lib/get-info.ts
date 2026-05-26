@@ -31,8 +31,8 @@ export function getRecentDeployments(deployments?: Deployment[], limit = 5) {
     .slice(0, limit);
 }
 
-export function getFailedBuildsCount(builds?: Build[]) {
-  return builds?.length ?? 0;
+export function getFailedBuildsCount(builds?: unknown) {
+  return toArray<Build>(builds).length;
 }
 
 export function getBuildSuccessRate(builds?: Build[]) {
@@ -57,9 +57,10 @@ export function getBuildSuccessRate(builds?: Build[]) {
   return Math.round((successfulBuilds.length / completedBuilds.length) * 100);
 }
 
-export function getAverageBuildDuration(builds?: Build[]) {
-  const buildsWithDuration =
-    builds?.filter((build) => typeof build.durationSec === 'number') ?? [];
+export function getAverageBuildDuration(builds?: unknown) {
+  const buildsWithDuration = toArray<Build>(builds).filter(
+    (build) => typeof build.durationSec === 'number',
+  );
 
   if (!buildsWithDuration.length) {
     return undefined;
@@ -73,11 +74,10 @@ export function getAverageBuildDuration(builds?: Build[]) {
   return Math.round(total / buildsWithDuration.length);
 }
 
-export function getHealthyEnvironmentsCount(environments?: Environment[]) {
-  return (
-    environments?.filter((environment) => environment.status === 'healthy')
-      .length ?? 0
-  );
+export function getHealthyEnvironmentsCount(environments?: unknown) {
+  return toArray<Environment>(environments).filter(
+    (environment) => environment.status === 'healthy',
+  ).length;
 }
 
 export function getProjectHealth(params: {
@@ -89,7 +89,9 @@ export function getProjectHealth(params: {
   const { lastPipeline, lastDeployment, environments, failedBuildsCount } =
     params;
 
-  const hasDownEnvironment = environments?.some(
+  const safeEnvironments = toArray<Environment>(environments);
+
+  const hasDownEnvironment = safeEnvironments.some(
     (environment) => environment.status === 'down',
   );
 
@@ -106,7 +108,7 @@ export function getProjectHealth(params: {
     return 'running';
   }
 
-  const hasDegradedEnvironment = environments?.some(
+  const hasDegradedEnvironment = safeEnvironments.some(
     (environment) => environment.status === 'degraded',
   );
 

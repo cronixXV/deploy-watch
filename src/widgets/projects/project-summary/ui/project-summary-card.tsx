@@ -90,15 +90,15 @@ export const ProjectSummaryCard = ({ project }: ProjectSummaryCardProps) => {
     environments: environmentsQuery.data,
     failedBuildsCount,
   });
-
   const isSummaryLoading =
     pipelineRunsQuery.isLoading ||
     deploymentsQuery.isLoading ||
     environmentsQuery.isLoading ||
     failedBuildsQuery.isLoading;
 
-  const environmentsCount = environmentsQuery.data?.length ?? 0;
-
+  const environmentsCount = Array.isArray(environmentsQuery.data)
+    ? environmentsQuery.data.length
+    : 0;
   return (
     <DefaultCard
       borderColor={projectHealth === 'critical' ? 'red.200' : 'gray.200'}
