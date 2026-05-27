@@ -1,3 +1,5 @@
+import type { Approval } from '../api/mocks/model/types/types';
+
 type StatusColor =
   | 'green'
   | 'red'
@@ -31,8 +33,18 @@ const STATUS_COLOR_MAP = {
   degraded: 'orange',
 } as const satisfies Record<string, StatusColor>;
 
+const RISK_COLOR_MAP = {
+  low: 'green',
+  medium: 'yellow',
+  high: 'red',
+} as const satisfies Record<Approval['riskLevel'], StatusColor>;
+
 type KnownStatus = keyof typeof STATUS_COLOR_MAP;
 
 export function getStatusColor(status?: string): StatusColor {
   return STATUS_COLOR_MAP[status as KnownStatus] ?? 'gray';
+}
+
+export function getRiskColor(riskLevel?: Approval['riskLevel']): StatusColor {
+  return riskLevel ? RISK_COLOR_MAP[riskLevel] : 'gray';
 }

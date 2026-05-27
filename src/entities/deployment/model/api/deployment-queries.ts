@@ -1,16 +1,34 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
+  approveDeployment,
   getDeploymentById,
+  getDeployments,
   getProjectDeployments,
+  rejectDeployment,
   rollbackDeployment,
+  type ApproveDeploymentParams,
   type GetProjectDeploymentsParams,
+  type RejectDeploymentParams,
   type RollbackDeploymentRequest,
 } from './deployment-api';
 
-import type { Deployment } from '@/shared/api/mocks/model/types/types';
+import type {
+  Approval,
+  Deployment,
+} from '@/shared/api/mocks/model/types/types';
 
+import { approvalQueries } from '@/entities/approval';
 import { environmentQueries } from '@/entities/environment';
+
+function removeApprovalFromCache(
+  approvals: Approval[] | undefined,
+  deploymentId: string,
+) {
+  return approvals?.filter(
+    (approval) => approval.deploymentId !== deploymentId,
+  );
+}
 
 export const deploymentQueries = {
   all: ['deployments'] as const,
@@ -22,6 +40,8 @@ export const deploymentQueries = {
   details: () => [...deploymentQueries.all, 'detail'] as const,
   detail: (deploymentId: string) =>
     [...deploymentQueries.details(), deploymentId] as const,
+
+  allList: () => [...deploymentQueries.all, 'all-list'] as const,
 };
 
 function shouldPollDeployment(deployment?: Deployment) {
@@ -93,6 +113,108 @@ export function useRollbackDeploymentMutation(
           queryKey: environmentQueries.list(params.projectId),
         });
       }
+    },
+  });
+}
+
+export function useDeploymentsQuery() {
+  return useQuery({
+    queryKey: deploymentQueries.allList(),
+    queryFn: getDeployments,
+  });
+}
+
+export function useApproveDeploymentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: ApproveDeploymentParams) => approveDeployment(params),
+
+    onMutate: async ({ deploymentId }) => {
+      await queryClient.cancelQueries({
+        queryKey: approvalQueries.lists(),
+      });
+
+      const previousApprovalsQueries = queryClient.getQueriesData<Approval[]>({
+        queryKey: approvalQueries.lists(),
+      });
+
+      queryClient.setQueriesData<Approval[]>(
+        {
+          queryKey: approvalQueries.lists(),
+        },
+        (oldApprovals) => removeApprovalFromCache(oldApprovals, deploymentId),
+      );
+
+      return {
+        previousApprovalsQueries,
+      };
+    },
+
+    onError: (_error, _variables, context) => {
+      context?.previousApprovalsQueries.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: approvalQueries.all,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: deploymentQueries.all,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: environmentQueries.all,
+        }),
+      ]);
+    },
+  });
+}
+
+export function useRejectDeploymentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: RejectDeploymentParams) => rejectDeployment(params),
+
+    onMutate: async ({ deploymentId }) => {
+      await queryClient.cancelQueries({
+        queryKey: approvalQueries.lists(),
+      });
+
+      const previousApprovalsQueries = queryClient.getQueriesData<Approval[]>({
+        queryKey: approvalQueries.lists(),
+      });
+
+      queryClient.setQueriesData<Approval[]>(
+        {
+          queryKey: approvalQueries.lists(),
+        },
+        (oldApprovals) => removeApprovalFromCache(oldApprovals, deploymentId),
+      );
+
+      return {
+        previousApprovalsQueries,
+      };
+    },
+
+    onError: (_error, _variables, context) => {
+      context?.previousApprovalsQueries.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: approvalQueries.all,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: deploymentQueries.all,
+        }),
+      ]);
     },
   });
 }

@@ -12,5 +12,4 @@ export {
 export {
   getEnvironmentHealthLabel,
   getEnvironmentHealthDescription,
-  getUserNameById,
 } from './lib/enviroment-helpers';

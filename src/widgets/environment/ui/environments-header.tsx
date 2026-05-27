@@ -1,5 +1,4 @@
-import { Box, Button, Heading, HStack, Text } from '@chakra-ui/react';
-import { RefreshCw } from 'lucide-react';
+import { PageHeader } from '@/shared/ui/page-header/ui/page-header';
 
 type EnvironmentsHeaderProps = {
   projectName?: string;
@@ -13,27 +12,15 @@ export const EnvironmentsHeader = ({
   onRefresh,
 }: EnvironmentsHeaderProps) => {
   return (
-    <HStack align="start" justify="space-between">
-      <Box>
-        <Heading size="lg">Environments</Heading>
-
-        <Text color="gray.500" mt="2">
-          {projectName
-            ? `${projectName} · runtime status across deployment targets.`
-            : 'Runtime status across deployment targets.'}
-        </Text>
-      </Box>
-
-      <Button
-        colorPalette="teal"
-        loading={isFetching}
-        size="sm"
-        variant="outline"
-        onClick={onRefresh}
-      >
-        <RefreshCw size={16} />
-        Refresh
-      </Button>
-    </HStack>
+    <PageHeader
+      title="Environments"
+      subtitle={
+        projectName
+          ? `${projectName} · runtime status across deployment targets.`
+          : 'Runtime status across deployment targets.'
+      }
+      isFetching={isFetching}
+      onRefresh={onRefresh}
+    />
   );
 };

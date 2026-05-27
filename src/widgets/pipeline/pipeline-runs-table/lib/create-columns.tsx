@@ -5,7 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { PipelineRun, User } from '@/shared/api/mocks/model/types/types';
 import type { ColumnDef } from '@tanstack/react-table';
 
-import { getUserNameById } from '@/entities/environment';
+import { getUserNameById } from '@/entities/user';
 import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
 

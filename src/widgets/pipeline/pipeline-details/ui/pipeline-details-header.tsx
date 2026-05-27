@@ -12,13 +12,13 @@ type PipelineDetailsHeaderProps = {
   onRefresh: () => void;
 };
 
-export function PipelineDetailsHeader({
+export const PipelineDetailsHeader = ({
   projectId,
   pipelineRun,
   isFetching,
   isLive,
   onRefresh,
-}: PipelineDetailsHeaderProps) {
+}: PipelineDetailsHeaderProps) => {
   return (
     <PageHeader
       title={`Pipeline ${pipelineRun?.id ?? ''}`}
@@ -45,4 +45,4 @@ export function PipelineDetailsHeader({
       onRefresh={onRefresh}
     />
   );
-}
+};

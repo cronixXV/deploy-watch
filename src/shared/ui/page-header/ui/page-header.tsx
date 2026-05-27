@@ -38,7 +38,7 @@ type PageHeaderProps = {
   actions?: ReactNode;
 };
 
-export function PageHeader({
+export const PageHeader = ({
   title,
   subtitle,
   status,
@@ -48,7 +48,7 @@ export function PageHeader({
   isFetching = false,
   onRefresh,
   actions,
-}: PageHeaderProps) {
+}: PageHeaderProps) => {
   return (
     <HStack justify="space-between" align="start">
       <Stack gap="2">
@@ -110,4 +110,4 @@ export function PageHeader({
       </HStack>
     </HStack>
   );
-}
+};

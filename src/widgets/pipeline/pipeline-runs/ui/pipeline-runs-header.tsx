@@ -1,5 +1,4 @@
-import { Box, Button, Heading, HStack, Text } from '@chakra-ui/react';
-import { RefreshCw } from 'lucide-react';
+import { PageHeader } from '@/shared/ui/page-header/ui/page-header';
 
 type PipelineRunsHeaderProps = {
   projectName?: string;
@@ -14,31 +13,17 @@ export const PipelineRunsHeader = ({
   isFetching,
   onRefresh,
 }: PipelineRunsHeaderProps) => {
-  const description =
+  const subtitle =
     projectName && repository
       ? `${projectName} · ${repository}`
       : 'Pipeline runs history.';
 
   return (
-    <HStack align="start" justify="space-between">
-      <Box>
-        <Heading size="lg">Pipeline runs</Heading>
-
-        <Text color="gray.500" mt="2">
-          {description}
-        </Text>
-      </Box>
-
-      <Button
-        colorPalette="teal"
-        loading={isFetching}
-        size="sm"
-        variant="outline"
-        onClick={onRefresh}
-      >
-        <RefreshCw size={16} />
-        Refresh
-      </Button>
-    </HStack>
+    <PageHeader
+      title="Pipeline runs"
+      subtitle={subtitle}
+      isFetching={isFetching}
+      onRefresh={onRefresh}
+    />
   );
 };

@@ -1,4 +1,4 @@
-import type { Environment, User } from '@/shared/api/mocks/model/types/types';
+import type { Environment } from '@/shared/api/mocks/model/types/types';
 
 export function getEnvironmentHealthLabel(environment: Environment) {
   if (environment.locked) {
@@ -46,12 +46,4 @@ export function getEnvironmentHealthDescription(environment: Environment) {
     default:
       return 'Environment health is unknown.';
   }
-}
-
-export function getUserNameById(users: User[] | undefined, userId?: string) {
-  if (!userId) {
-    return 'Unknown user';
-  }
-
-  return users?.find((user) => user.id === userId)?.name ?? userId;
 }

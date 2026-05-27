@@ -3,6 +3,7 @@ import type {
   Deployment,
   Environment,
   PipelineRun,
+  Project,
   ProjectHealth,
 } from '@/shared/api/mocks/model/types/types';
 
@@ -121,4 +122,12 @@ export function getProjectHealth(params: {
   }
 
   return 'healthy';
+}
+
+export function getProjectNameById(projects: unknown, projectId: string) {
+  const safeProjects = toArray<Project>(projects);
+
+  return (
+    safeProjects.find((project) => project.id === projectId)?.name ?? projectId
+  );
 }

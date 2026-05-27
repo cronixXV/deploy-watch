@@ -6,8 +6,8 @@ import type { Environment, User } from '@/shared/api/mocks/model/types/types';
 import {
   getEnvironmentHealthDescription,
   getEnvironmentHealthLabel,
-  getUserNameById,
 } from '@/entities/environment';
+import { getUserNameById } from '@/entities/user';
 import { formatDate, formatStatus } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
 import { DefaultCard } from '@/shared/ui/default-card/ui/default-card';

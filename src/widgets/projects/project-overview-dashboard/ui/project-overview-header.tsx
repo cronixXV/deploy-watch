@@ -12,15 +12,15 @@ type ProjectOverviewHeaderProps = {
   onRefresh: () => void;
 };
 
-export function ProjectOverviewHeader({
+export const ProjectOverviewHeader = ({
   project,
   projectId,
   isFetching,
   onRefresh,
-}: ProjectOverviewHeaderProps) {
+}: ProjectOverviewHeaderProps) => {
   return (
     <PageHeader
-      title={project?.name}
+      title={project?.name ?? 'Project overview'}
       subtitle={
         project
           ? `${project.repository} · default branch: ${project.defaultBranch}`
@@ -37,4 +37,4 @@ export function ProjectOverviewHeader({
       }
     />
   );
-}
+};

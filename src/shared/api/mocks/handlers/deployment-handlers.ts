@@ -14,6 +14,10 @@ type RollbackRequestBody = {
   reason?: string;
 };
 
+type RejectDeploymentRequestBody = {
+  reason?: string;
+};
+
 function getSearchParam(url: URL, key: string) {
   const value = url.searchParams.get(key);
 
@@ -21,6 +25,102 @@ function getSearchParam(url: URL, key: string) {
 }
 
 export const deploymentHandlers = [
+  http.post(
+    '/deployments/:deploymentId/reject',
+    async ({ params, request }) => {
+      await mockRandomDelay(500, 1000);
+
+      const { deploymentId } = params;
+      const body = (await request.json()) as RejectDeploymentRequestBody;
+
+      if (!body.reason?.trim()) {
+        return HttpResponse.json(
+          { message: 'Reject reason is required' },
+          { status: 400 },
+        );
+      }
+
+      const deployment = mockState.deployments.find(
+        (item) => item.id === deploymentId,
+      );
+
+      if (!deployment) {
+        return HttpResponse.json(
+          { message: 'Deployment not found' },
+          { status: 404 },
+        );
+      }
+
+      if (deployment.status !== 'waiting_approval') {
+        return HttpResponse.json(
+          { message: 'Only deployments waiting for approval can be rejected' },
+          { status: 400 },
+        );
+      }
+
+      deployment.status = 'rejected';
+      deployment.finishedAt = new Date().toISOString();
+
+      const approval = mockState.approvals.find(
+        (item) =>
+          item.deploymentId === deploymentId && item.status === 'pending',
+      );
+
+      if (approval) {
+        approval.status = 'rejected';
+        approval.resolvedAt = new Date().toISOString();
+        approval.resolvedById = 'user-1';
+        approval.rejectReason = body.reason.trim();
+      }
+
+      return HttpResponse.json(deployment);
+    },
+  ),
+  http.post('/deployments/:deploymentId/approve', async ({ params }) => {
+    await mockRandomDelay(500, 1000);
+
+    const { deploymentId } = params;
+
+    const deployment = mockState.deployments.find(
+      (item) => item.id === deploymentId,
+    );
+
+    if (!deployment) {
+      return HttpResponse.json(
+        { message: 'Deployment not found' },
+        { status: 404 },
+      );
+    }
+
+    if (deployment.status !== 'waiting_approval') {
+      return HttpResponse.json(
+        { message: 'Only deployments waiting for approval can be approved' },
+        { status: 400 },
+      );
+    }
+
+    deployment.status = 'deploying';
+    deployment.startedAt = new Date().toISOString();
+
+    const approval = mockState.approvals.find(
+      (item) => item.deploymentId === deploymentId && item.status === 'pending',
+    );
+
+    if (approval) {
+      approval.status = 'approved';
+      approval.resolvedAt = new Date().toISOString();
+      approval.resolvedById = 'user-1';
+    }
+
+    return HttpResponse.json(deployment);
+  }),
+
+  http.get('/deployments', async () => {
+    await mockRandomDelay(300, 700);
+
+    return HttpResponse.json(mockState.deployments);
+  }),
+
   http.get('/projects/:projectId/deployments', async ({ params, request }) => {
     await mockRandomDelay(400, 900);
 

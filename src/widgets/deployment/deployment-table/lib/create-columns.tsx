@@ -4,7 +4,7 @@ import { RotateCcw } from 'lucide-react';
 import type { Deployment, User } from '@/shared/api/mocks/model/types/types';
 import type { ColumnDef } from '@tanstack/react-table';
 
-import { getUserNameById } from '@/entities/environment';
+import { getUserNameById } from '@/entities/user';
 import { formatDate, formatStatus } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
 

@@ -15,6 +15,7 @@ export {
   getBuildSuccessRate,
   getHealthyEnvironmentsCount,
   getRecentDeployments,
+  getProjectNameById,
 } from './lib/get-info';
 
 export type {

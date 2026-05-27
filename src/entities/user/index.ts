@@ -5,3 +5,5 @@ export {
   useCurrentUserQuery,
   useUsersQuery,
 } from './model/api/user-queries';
+
+export { getUserNameById } from './lib/helpers';
