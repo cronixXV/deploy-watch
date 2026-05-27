@@ -1,11 +1,33 @@
-import { Badge, Box, Button, HStack, Table, Text } from '@chakra-ui/react';
-import { ArrowRight } from 'lucide-react';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  HStack,
+  NativeSelect,
+  Table,
+  Text,
+} from '@chakra-ui/react';
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type PaginationState,
+  type SortingState,
+} from '@tanstack/react-table';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+
+import { createPipelineJobsColumns } from '../lib/create-columns';
 
 import type { Build } from '@/shared/api/mocks/model/types/types';
 
-import { formatDate, formatDuration, formatStatus } from '@/shared/lib/format';
-import { getStatusColor } from '@/shared/lib/get-color';
+import { getSortIcon } from '@/shared/lib/get-sort-icon';
 
 type PipelineJobsTableProps = {
   projectId: string;
@@ -13,78 +35,189 @@ type PipelineJobsTableProps = {
 };
 
 export function PipelineJobsTable({ projectId, jobs }: PipelineJobsTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'startedAt',
+      desc: true,
+    },
+  ]);
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const columns = useMemo(
+    () =>
+      createPipelineJobsColumns({
+        projectId,
+      }),
+    [projectId],
+  );
+
+  const table = useReactTable({
+    data: jobs,
+    columns,
+    state: {
+      sorting,
+      pagination,
+    },
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
   return (
     <Box
-      overflowX="auto"
       rounded="xl"
       borderWidth="1px"
       borderColor="gray.200"
       bg="white"
       shadow="sm"
+      overflow="hidden"
     >
-      <Table.Root size="sm" variant="line">
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Status</Table.ColumnHeader>
-            <Table.ColumnHeader>Job</Table.ColumnHeader>
-            <Table.ColumnHeader>Started at</Table.ColumnHeader>
-            <Table.ColumnHeader>Finished at</Table.ColumnHeader>
-            <Table.ColumnHeader>Duration</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="right">Actions</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
+      <Box overflowX="auto">
+        <Table.Root size="sm" variant="line">
+          <Table.Header>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const sortDirection = header.column.getIsSorted();
 
-        <Table.Body>
-          {jobs.map((job) => (
-            <Table.Row key={job.id}>
-              <Table.Cell>
-                <Badge
-                  colorPalette={getStatusColor(job.status)}
-                  variant="subtle"
-                >
-                  {formatStatus(job.status)}
-                </Badge>
-              </Table.Cell>
+                  return (
+                    <Table.ColumnHeader
+                      key={header.id}
+                      whiteSpace="nowrap"
+                      textAlign={
+                        header.column.id === 'actions' ? 'right' : 'left'
+                      }
+                    >
+                      {header.isPlaceholder ? null : canSort ? (
+                        <Button
+                          colorPalette="gray"
+                          size="xs"
+                          variant="ghost"
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                          {getSortIcon(sortDirection)}
+                        </Button>
+                      ) : (
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )
+                      )}
+                    </Table.ColumnHeader>
+                  );
+                })}
+              </Table.Row>
+            ))}
+          </Table.Header>
 
-              <Table.Cell>
-                <Text fontWeight="medium">{job.jobName}</Text>
-                <Text color="gray.500" fontSize="xs">
-                  {job.id}
-                </Text>
-              </Table.Cell>
+          <Table.Body>
+            {table.getRowModel().rows.map((row) => (
+              <Table.Row key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <Table.Cell
+                    key={cell.id}
+                    verticalAlign="top"
+                    textAlign={cell.column.id === 'actions' ? 'right' : 'left'}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Table.Cell>
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Box>
 
-              <Table.Cell>
-                <Text color="gray.600" fontSize="sm">
-                  {formatDate(job.startedAt)}
-                </Text>
-              </Table.Cell>
+      <HStack
+        justify="space-between"
+        borderTopWidth="1px"
+        borderColor="gray.200"
+        px="4"
+        py="3"
+      >
+        <HStack gap="3">
+          <Text color="gray.500" fontSize="sm">
+            Rows per page
+          </Text>
 
-              <Table.Cell>
-                <Text color="gray.600" fontSize="sm">
-                  {formatDate(job.finishedAt)}
-                </Text>
-              </Table.Cell>
+          <NativeSelect.Root size="sm" w="84px">
+            <NativeSelect.Field
+              value={table.getState().pagination.pageSize}
+              onChange={(event) => {
+                table.setPageSize(Number(event.target.value));
+              }}
+            >
+              {[5, 10, 20, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </NativeSelect.Field>
 
-              <Table.Cell>
-                <Text color="gray.600" fontSize="sm">
-                  {formatDuration(job.durationSec)}
-                </Text>
-              </Table.Cell>
+            <NativeSelect.Indicator />
+          </NativeSelect.Root>
+        </HStack>
 
-              <Table.Cell>
-                <HStack justify="flex-end">
-                  <Button colorPalette="teal" size="sm" variant="ghost" asChild>
-                    <RouterLink to={`/projects/${projectId}/builds/${job.id}`}>
-                      Logs
-                      <ArrowRight size={16} />
-                    </RouterLink>
-                  </Button>
-                </HStack>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+        <HStack gap="3">
+          <Text color="gray.500" fontSize="sm">
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
+            {table.getPageCount()}
+          </Text>
+
+          <HStack gap="1">
+            <Button
+              aria-label="First page"
+              disabled={!table.getCanPreviousPage()}
+              size="sm"
+              variant="ghost"
+              onClick={() => table.firstPage()}
+            >
+              <ChevronsLeft size={16} />
+            </Button>
+
+            <Button
+              aria-label="Previous page"
+              disabled={!table.getCanPreviousPage()}
+              size="sm"
+              variant="ghost"
+              onClick={() => table.previousPage()}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+
+            <Button
+              aria-label="Next page"
+              disabled={!table.getCanNextPage()}
+              size="sm"
+              variant="ghost"
+              onClick={() => table.nextPage()}
+            >
+              <ChevronRight size={16} />
+            </Button>
+
+            <Button
+              aria-label="Last page"
+              disabled={!table.getCanNextPage()}
+              size="sm"
+              variant="ghost"
+              onClick={() => table.lastPage()}
+            >
+              <ChevronsRight size={16} />
+            </Button>
+          </HStack>
+        </HStack>
+      </HStack>
     </Box>
   );
 }

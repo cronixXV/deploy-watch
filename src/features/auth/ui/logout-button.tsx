@@ -1,18 +1,18 @@
 import { Button } from '@chakra-ui/react';
 import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { logout as logoutAction } from '@/app/store/slices/auth-slice';
 import { useLogoutMutation } from '@/entities/auth';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { useAppToast } from '@/shared/hooks/use-app-toast';
 
 export const LogoutButton = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const logoutMutation = useLogoutMutation();
+  const appToast = useAppToast();
 
   const handleLogout = async () => {
     try {
@@ -20,13 +20,13 @@ export const LogoutButton = () => {
 
       dispatch(logoutAction());
 
-      toast.success('Signed out successfully');
+      appToast.success('Signed out successfully');
 
       navigate('/login', {
         replace: true,
       });
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      appToast.errorFromUnknown(error);
     }
   };
 

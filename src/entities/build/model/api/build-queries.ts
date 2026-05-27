@@ -10,6 +10,8 @@ import {
 
 import type { Build } from '@/shared/api/mocks/model/types/types';
 
+import { useAppSelector } from '@/app/store/hooks';
+
 export const buildQueries = {
   all: ['builds'] as const,
 
@@ -44,18 +46,24 @@ export function useProjectBuildsQuery(params: GetProjectBuildsParams) {
 }
 
 export function useBuildQuery(buildId: string) {
+  const pollingInterval = useAppSelector(
+    (state) => state.settings.pollingInterval,
+  );
+
   return useQuery({
     queryKey: buildQueries.detail(buildId),
     queryFn: () => getBuildById(buildId),
     enabled: Boolean(buildId),
     refetchInterval: (query) => {
-      const data = query.state.data;
+      const build = query.state.data;
 
-      return shouldPollBuild(data) ? 3000 : false;
+      const isLiveBuild =
+        build?.status === 'queued' || build?.status === 'running';
+
+      return isLiveBuild ? pollingInterval : false;
     },
   });
 }
-
 export function useBuildLogsQuery(params: GetBuildLogsParams) {
   return useQuery({
     queryKey: buildQueries.logs(params),

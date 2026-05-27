@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
+import { DefaultProjectRedirect } from './default-project-redirect';
 import { ProtectedRoute } from './protected-route';
 
 import { ApprovalsPage } from '@/pages/approvals/ui/approvals-page';
@@ -28,7 +29,7 @@ export const appRouter = createBrowserRouter([
         children: [
           {
             path: '/',
-            element: <Navigate to="/projects" replace />,
+            element: <DefaultProjectRedirect />,
           },
           {
             path: '/projects',

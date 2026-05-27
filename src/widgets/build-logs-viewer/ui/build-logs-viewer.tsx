@@ -12,7 +12,6 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Copy, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
 
 import { filterLogs } from '../lib/filter-logs';
 import {
@@ -26,6 +25,7 @@ import type { BuildLogLine } from '@/shared/api/mocks/model/types/types';
 
 import { useBuildLogsQuery, type LogLevelFilter } from '@/entities/build';
 import { getApiErrorMessage } from '@/shared/api/client/client';
+import { useAppToast } from '@/shared/hooks/use-app-toast';
 import { useDebounce } from '@/shared/lib/debounced';
 import { formatLogTimestamp } from '@/shared/lib/format';
 import { getStatusColor } from '@/shared/lib/get-color';
@@ -48,6 +48,7 @@ export const BuildLogsViewer = ({ buildId }: BuildLogsViewerProps) => {
   const previousLogsLengthRef = useRef(0);
 
   const logsQuery = useBuildLogsQuery({ buildId });
+  const appToast = useAppToast();
 
   const logs = logsQuery.data ?? EMPTY_LOGS;
   const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_MS);
@@ -104,24 +105,24 @@ export const BuildLogsViewer = ({ buildId }: BuildLogsViewerProps) => {
     try {
       await copyToClipboard(formatLogLine(log));
 
-      toast.success('Log line copied');
-    } catch {
-      toast.error('Failed to copy log line');
+      appToast.success('Log line copied');
+    } catch (error) {
+      appToast.errorFromUnknown(error);
     }
   }, []);
 
   const handleCopyAllVisibleLogs = useCallback(async () => {
     if (!filteredLogs.length) {
-      toast.error('No logs to copy');
+      appToast.errorFromUnknown('No logs to copy');
       return;
     }
 
     try {
       await copyToClipboard(filteredLogs.map(formatLogLine).join('\n'));
 
-      toast.success('Visible logs copied');
-    } catch {
-      toast.error('Failed to copy logs');
+      appToast.success('Visible logs copied');
+    } catch (error) {
+      appToast.errorFromUnknown(error);
     }
   }, [filteredLogs]);
 

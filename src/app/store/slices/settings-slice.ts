@@ -1,38 +1,89 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-type Theme = 'light' | 'dark';
+import { STORAGE_KEYS } from '@/shared/consts/storage';
 
-type SettingsState = {
-  theme: Theme;
-  pollingIntervalMs: number;
-  compactMode: boolean;
+export type PollingInterval = 3000 | 5000 | 10000 | 30000;
+
+export type SettingsState = {
+  pollingInterval: PollingInterval;
+  defaultProjectId: string | null;
+  notificationsEnabled: boolean;
+  compactTableMode: boolean;
 };
 
-const initialState: SettingsState = {
-  theme: 'dark',
-  pollingIntervalMs: 3000,
-  compactMode: false,
+const defaultSettings: SettingsState = {
+  pollingInterval: 3000,
+  defaultProjectId: null,
+  notificationsEnabled: true,
+  compactTableMode: false,
 };
+
+function isSettingsState(value: unknown): value is Partial<SettingsState> {
+  return typeof value === 'object' && value !== null;
+}
+
+function loadSettings(): SettingsState {
+  try {
+    const rawSettings = localStorage.getItem(STORAGE_KEYS.settings);
+
+    if (!rawSettings) {
+      return defaultSettings;
+    }
+
+    const parsedSettings = JSON.parse(rawSettings);
+
+    if (!isSettingsState(parsedSettings)) {
+      return defaultSettings;
+    }
+
+    return {
+      ...defaultSettings,
+      ...parsedSettings,
+    };
+  } catch {
+    return defaultSettings;
+  }
+}
+
+function saveSettings(settings: SettingsState) {
+  localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
+}
+
+const initialState: SettingsState = loadSettings();
 
 const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setTheme: (state, action: PayloadAction<Theme>) => {
-      state.theme = action.payload;
+    pollingIntervalChanged: (state, action: PayloadAction<PollingInterval>) => {
+      state.pollingInterval = action.payload;
+      saveSettings(state);
     },
 
-    setPollingIntervalMs: (state, action: PayloadAction<number>) => {
-      state.pollingIntervalMs = action.payload;
+    defaultProjectChanged: (state, action: PayloadAction<string | null>) => {
+      state.defaultProjectId = action.payload;
+      saveSettings(state);
     },
 
-    setCompactMode: (state, action: PayloadAction<boolean>) => {
-      state.compactMode = action.payload;
+    notificationsToggled: (state, action: PayloadAction<boolean>) => {
+      state.notificationsEnabled = action.payload;
+      saveSettings(state);
+    },
+
+    settingsReset: () => {
+      saveSettings(defaultSettings);
+
+      return defaultSettings;
     },
   },
 });
 
-export const { setTheme, setPollingIntervalMs, setCompactMode } =
-  settingsSlice.actions;
+export const {
+  pollingIntervalChanged,
+  defaultProjectChanged,
+  notificationsToggled,
+
+  settingsReset,
+} = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

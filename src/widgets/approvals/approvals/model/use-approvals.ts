@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
 
 import type { Approval } from '@/shared/api/mocks/model/types/types';
 
@@ -11,7 +10,7 @@ import {
 } from '@/entities/deployment';
 import { useProjectsQuery } from '@/entities/project';
 import { useUsersQuery } from '@/entities/user';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { useAppToast } from '@/shared/hooks/use-app-toast';
 import { formatStatus } from '@/shared/lib/format';
 
 export const useApprovals = () => {
@@ -21,6 +20,8 @@ export const useApprovals = () => {
   const approvalsQuery = useApprovalsQuery({
     status: 'pending',
   });
+
+  const appToast = useAppToast();
 
   const projectsQuery = useProjectsQuery();
   const usersQuery = useUsersQuery();
@@ -67,14 +68,14 @@ export const useApprovals = () => {
           deploymentId: approval.deploymentId,
         });
 
-        toast.success(
+        appToast.success(
           `${formatStatus(approval.environment)} deployment approved successfully`,
         );
       } catch (error) {
-        toast.error(getApiErrorMessage(error));
+        appToast.errorFromUnknown(error);
       }
     },
-    [approveDeploymentMutation],
+    [appToast, approveDeploymentMutation],
   );
 
   const openRejectDialog = useCallback((approval: Approval) => {
@@ -104,11 +105,11 @@ export const useApprovals = () => {
         },
       });
 
-      toast.success(
+      appToast.success(
         `${formatStatus(approval.environment)} deployment rejected successfully`,
       );
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      appToast.errorFromUnknown(error);
     }
   };
 

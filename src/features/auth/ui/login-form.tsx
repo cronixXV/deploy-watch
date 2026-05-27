@@ -10,14 +10,13 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, type Resolver } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import { loginSchema, type LoginFormValues } from '../model/schemas/schema';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { loginSucceeded } from '@/app/store/slices/auth-slice';
 import { useLoginMutation } from '@/entities/auth';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { useAppToast } from '@/shared/hooks/use-app-toast';
 
 type LocationState = {
   from?: {
@@ -29,6 +28,7 @@ export const LoginForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const appToast = useAppToast();
 
   const loginMutation = useLoginMutation();
 
@@ -61,13 +61,13 @@ export const LoginForm = () => {
         }),
       );
 
-      toast.success('Signed in successfully');
+      appToast.success('Signed in successfully');
 
       navigate(redirectTo, {
         replace: true,
       });
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      appToast.errorFromUnknown(error);
     }
   });
 

@@ -10,6 +10,8 @@ import {
 
 import type { Build, PipelineRun } from '@/shared/api/mocks/model/types/types';
 
+import { useAppSelector } from '@/app/store/hooks';
+
 export const pipelineQueries = {
   all: ['pipeline-runs'] as const,
 
@@ -41,6 +43,10 @@ function shouldPollBuilds(builds?: Build[]) {
 export function useProjectPipelineRunsQuery(
   params: GetProjectPipelineRunsParams,
 ) {
+  const pollingInterval = useAppSelector(
+    (state) => state.settings.pollingInterval,
+  );
+
   return useQuery({
     queryKey: pipelineQueries.list(params),
     queryFn: () => getProjectPipelineRuns(params),
@@ -52,12 +58,16 @@ export function useProjectPipelineRunsQuery(
         shouldPollPipelineRun(pipelineRun),
       );
 
-      return hasActivePipeline ? 3000 : false;
+      return hasActivePipeline ? pollingInterval : false;
     },
   });
 }
 
 export function usePipelineRunQuery(pipelineRunId: string) {
+  const pollingInterval = useAppSelector(
+    (state) => state.settings.pollingInterval,
+  );
+
   return useQuery({
     queryKey: pipelineQueries.detail(pipelineRunId),
     queryFn: () => getPipelineRunById(pipelineRunId),
@@ -65,12 +75,16 @@ export function usePipelineRunQuery(pipelineRunId: string) {
     refetchInterval: (query) => {
       const data = query.state.data;
 
-      return shouldPollPipelineRun(data) ? 3000 : false;
+      return shouldPollPipelineRun(data) ? pollingInterval : false;
     },
   });
 }
 
 export function usePipelineRunBuildsQuery(pipelineRunId: string) {
+  const pollingInterval = useAppSelector(
+    (state) => state.settings.pollingInterval,
+  );
+
   return useQuery({
     queryKey: pipelineQueries.builds(pipelineRunId),
     queryFn: () => getPipelineRunBuilds(pipelineRunId),
@@ -78,10 +92,11 @@ export function usePipelineRunBuildsQuery(pipelineRunId: string) {
     refetchInterval: (query) => {
       const data = query.state.data;
 
-      return shouldPollBuilds(data) ? 3000 : false;
+      return shouldPollBuilds(data) ? pollingInterval : false;
     },
   });
 }
+
 export function useProjectPipelineRunsMetaQuery(projectId?: string) {
   return useQuery({
     queryKey: pipelineQueries.meta(projectId ?? ''),

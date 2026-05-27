@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import type { Deployment } from '@/shared/api/mocks/model/types/types';
 
@@ -9,7 +8,8 @@ import {
 } from '@/entities/deployment';
 import { useProjectQuery } from '@/entities/project';
 import { useUsersQuery } from '@/entities/user';
-import { getApiErrorMessage } from '@/shared/api/client/client';
+import { useAppToast } from '@/shared/hooks/use-app-toast';
+import { formatStatus } from '@/shared/lib/format';
 
 type UseDeploymentsParams = {
   projectId?: string;
@@ -22,6 +22,7 @@ export const useDeployments = ({ projectId }: UseDeploymentsParams) => {
   const [selectedRollbackDeployment, setSelectedRollbackDeployment] =
     useState<Deployment | null>(null);
 
+  const appToast = useAppToast();
   const projectQuery = useProjectQuery(projectId);
   const deploymentsQuery = useProjectDeploymentsQuery({
     projectId,
@@ -82,13 +83,15 @@ export const useDeployments = ({ projectId }: UseDeploymentsParams) => {
         deploymentId: selectedRollbackDeployment.id,
       });
 
-      toast.success(
-        `${selectedRollbackDeployment.environment} rolled back successfully`,
+      appToast.success(
+        `Rollback started for ${formatStatus(
+          selectedRollbackDeployment.environment,
+        )}`,
       );
 
       setSelectedRollbackDeployment(null);
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      appToast.errorFromUnknown(error);
     }
   };
 
