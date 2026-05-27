@@ -174,11 +174,6 @@ export function SettingsPage() {
                 value={settings.notificationsEnabled ? 'Enabled' : 'Disabled'}
               />
 
-              <InfoRow
-                label="Compact tables"
-                value={settings.compactTableMode ? 'Enabled' : 'Disabled'}
-              />
-
               <Button
                 colorPalette="red"
                 mt="2"
