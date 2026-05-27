@@ -6,6 +6,7 @@ import { useApprovals } from '../model/use-approvals';
 import { ApprovalsHeader } from './approvals-header';
 
 import { RejectDeploymentDialog } from '@/features/reject-deployment';
+import { usePermissions } from '@/shared/hooks/use-permissions';
 import { EmptyState } from '@/shared/ui/empty-state/ui/empty-state';
 import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
 import { SkeletonLoader } from '@/shared/ui/skeleton/skeleton-loader';
@@ -31,6 +32,7 @@ export const Approvals = () => {
     reject,
     handleRejectDialogOpenChange,
   } = useApprovals();
+  const permissions = usePermissions();
 
   if (isLoading) {
     return <SkeletonLoader />;
@@ -63,6 +65,8 @@ export const Approvals = () => {
             isApproving={isApproving}
             rejectingDeploymentId={rejectingDeploymentId}
             isRejecting={isRejecting}
+            canApprove={permissions.can('approve_deployment')}
+            canReject={permissions.can('reject_deployment')}
             onApprove={approve}
             onReject={openRejectDialog}
           />

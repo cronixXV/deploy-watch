@@ -32,6 +32,7 @@ import { getSortIcon } from '@/shared/lib/get-sort-icon';
 type DeploymentsTableProps = {
   deployments: Deployment[];
   users: User[];
+  canRollback: boolean;
   onOpenTimeline: (deployment: Deployment) => void;
   onRollback: (deployment: Deployment) => void;
 };
@@ -39,6 +40,7 @@ type DeploymentsTableProps = {
 export const DeploymentsTable = ({
   deployments,
   users,
+  canRollback,
   onOpenTimeline,
   onRollback,
 }: DeploymentsTableProps) => {
@@ -58,10 +60,11 @@ export const DeploymentsTable = ({
     () =>
       createDeploymentColumns({
         users,
+        canRollback,
         onOpenTimeline,
         onRollback,
       }),
-    [users, onOpenTimeline, onRollback],
+    [users, canRollback, onOpenTimeline, onRollback],
   );
 
   const table = useReactTable({

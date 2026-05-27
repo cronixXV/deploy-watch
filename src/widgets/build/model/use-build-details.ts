@@ -4,6 +4,7 @@ import { useUsersQuery } from '@/entities/user';
 
 type UseBuildDetailsParams = {
   buildId?: string;
+  projectId?: string;
 };
 
 export function useBuildDetails({ buildId }: UseBuildDetailsParams) {

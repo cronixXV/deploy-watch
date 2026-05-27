@@ -22,6 +22,8 @@ type CreateApprovalColumnsParams = {
   isApproving?: boolean;
   rejectingDeploymentId?: string;
   isRejecting?: boolean;
+  canApprove: boolean;
+  canReject: boolean;
   onApprove: (approval: Approval) => void;
   onReject: (approval: Approval) => void;
 };
@@ -34,6 +36,8 @@ export function createApprovalColumns({
   isApproving,
   rejectingDeploymentId,
   isRejecting,
+  canApprove,
+  canReject,
   onApprove,
   onReject,
 }: CreateApprovalColumnsParams): ColumnDef<Approval>[] {
@@ -156,7 +160,7 @@ export function createApprovalColumns({
           <HStack justify="flex-end">
             <Button
               colorPalette="green"
-              disabled={isActionPending && !isCurrentApproving}
+              disabled={!canApprove || (isActionPending && !isCurrentApproving)}
               loading={isCurrentApproving}
               size="sm"
               variant="ghost"
@@ -168,7 +172,7 @@ export function createApprovalColumns({
 
             <Button
               colorPalette="red"
-              disabled={isActionPending && !isCurrentRejecting}
+              disabled={!canReject || (isActionPending && !isCurrentRejecting)}
               loading={isCurrentRejecting}
               size="sm"
               variant="ghost"

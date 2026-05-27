@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/order
 import { Badge, Box, Button, HStack, Text } from '@chakra-ui/react';
+
 import { RotateCcw } from 'lucide-react';
 
 import type { Deployment, User } from '@/shared/api/mocks/model/types/types';
@@ -10,12 +12,14 @@ import { getStatusColor } from '@/shared/lib/get-color';
 
 type CreateDeploymentColumnsParams = {
   users: User[];
+  canRollback: boolean;
   onOpenTimeline: (deployment: Deployment) => void;
   onRollback: (deployment: Deployment) => void;
 };
 
 export function createDeploymentColumns({
   users,
+  canRollback,
   onOpenTimeline,
   onRollback,
 }: CreateDeploymentColumnsParams): ColumnDef<Deployment>[] {
@@ -113,8 +117,9 @@ export function createDeploymentColumns({
       cell: ({ row }) => {
         const deployment = row.original;
 
-        const canRollback =
-          deployment.status === 'deployed' || deployment.status === 'failed';
+        const isRollbackAllowed =
+          canRollback &&
+          (deployment.status === 'deployed' || deployment.status === 'failed');
 
         return (
           <HStack justify="flex-end">
@@ -129,7 +134,7 @@ export function createDeploymentColumns({
 
             <Button
               colorPalette="red"
-              disabled={!canRollback}
+              disabled={!isRollbackAllowed}
               size="sm"
               variant="ghost"
               onClick={() => onRollback(deployment)}

@@ -6,6 +6,7 @@ import { useDeployments } from '../model/use-deployments';
 
 import { DeploymentsHeader } from './deployments-header';
 
+import { usePermissions } from '@/shared/hooks/use-permissions';
 import { ConfirmDialog } from '@/shared/ui/confirm-dialog/ui/confirm-dialog';
 import { EmptyState } from '@/shared/ui/empty-state/ui/empty-state';
 import { PageErrorState } from '@/shared/ui/page-error-state/ui/page-errors-state';
@@ -34,6 +35,8 @@ export const Deployments = ({ projectId }: DeploymentsProps) => {
     handleRollbackConfirmOpenChange,
     confirmRollback,
   } = useDeployments({ projectId });
+
+  const permissions = usePermissions();
 
   if (!projectId) {
     return (
@@ -73,6 +76,7 @@ export const Deployments = ({ projectId }: DeploymentsProps) => {
           <DeploymentsTable
             deployments={deployments}
             users={users}
+            canRollback={permissions.can('rollback_deployment')}
             onOpenTimeline={openTimeline}
             onRollback={openRollbackConfirm}
           />

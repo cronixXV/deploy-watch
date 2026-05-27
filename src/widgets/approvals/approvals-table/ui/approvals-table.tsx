@@ -43,6 +43,8 @@ type ApprovalsTableProps = {
   isApproving?: boolean;
   rejectingDeploymentId?: string;
   isRejecting?: boolean;
+  canApprove: boolean;
+  canReject: boolean;
   onApprove: (approval: Approval) => void;
   onReject: (approval: Approval) => void;
 };
@@ -56,6 +58,8 @@ export const ApprovalsTable = ({
   isApproving,
   rejectingDeploymentId,
   isRejecting,
+  canApprove,
+  canReject,
   onApprove,
   onReject,
 }: ApprovalsTableProps) => {
@@ -81,6 +85,8 @@ export const ApprovalsTable = ({
         isApproving,
         rejectingDeploymentId,
         isRejecting,
+        canApprove,
+        canReject,
         onApprove,
         onReject,
       }),
@@ -92,6 +98,8 @@ export const ApprovalsTable = ({
       isApproving,
       rejectingDeploymentId,
       isRejecting,
+      canApprove,
+      canReject,
       onApprove,
       onReject,
     ],
